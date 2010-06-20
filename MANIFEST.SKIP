@@ -1,0 +1,7 @@
+project.vim
+dist.ini
+^XML-XSS.*
+i.html
+~$
+bak$
+tmp$

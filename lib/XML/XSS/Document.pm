@@ -1,42 +1,116 @@
 package XML::XSS::Document;
 
+=head1 NAME 
+
+XML::XSS::Document - XML::XSS document stylesheet rule
+
+=head1 SYNOPSIS
+
+    use XML::XSS;
+
+    my $xss = XML::XSS->new;
+
+    my $doc_style = $xss->document;
+
+    $doc_style->set_pre( "=pod\n" );
+    $doc_style->set_post( "=cut\n" );
+
+    print $xss->render( '<doc>yadah yadah</doc>' );
+
+=head1 DESCRIPTION
+
+A C<XML::XSS> rule that matches against the document to
+be rendered.  
+
+Note that this is the C<XML::LibXML::Document> object,
+and not the document root element.
+
+=cut
+
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 
 with 'XML::XSS::Role::Renderer';
 
-has clear_stash => (
+no warnings qw/ uninitialized /;
+
+=head1 ATTRIBUTES 
+
+=head2 use_clean_stash
+
+If set to true, which is the default, the stash cleared before a new 
+document is rendered.  
+
+=head3 use_clean_stash()
+
+Accessor getter.
+
+=head3 set_use_clean_stash($bool)
+
+Accessor setter.
+
+=cut
+
+has use_clean_stash => (
     default => 1,
-    is => 'rw',
+    is      => 'rw',
 );
 
-has [ qw/ pre post / ] => ( is => 'rw' );
+=head1 RENDERING ATTRIBUTES
 
-sub set {
-    my( $self, %attrs ) = @_;
+For a document, the displayed attributes follow the template:
 
-    while ( my ( $k, $v ) = each %attrs ) {
-        my $setter = "set_$k";
-        $self->$setter( $v );
-    }
-}
+    pre
+    [document nodes]
+    post
 
-sub applies {
+=head2 pre
+
+Printed before the document's nodes.
+
+=head2 post
+
+Printed after the document nodes.
+
+=cut 
+has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::RenderAttribute / ] );
+
+=head2 METHODS
+
+=head3 set( %attrs )
+
+A shortcut to the attribute setters.
+
+    $doc_style->set( 
+        pre  => 'foo',
+        post => 'bar',
+    );
+    # equivalent to 
+    $doc_style->set_pre( 'foo' );
+    $doc_style->set_post( 'bar' );
+
+=head3 apply( $node, $args )
+
+Applies the rule to the C<$node>, passing along the optional C<$args>,
+and returns the resulting string.
+
+=cut
+
+sub apply {
     my ( $self, $node, $args ) = @_;
-
     $args ||= {};
 
-    $self->stylesheet->clear_stash if $self->clear_stash;
+    $self->stylesheet->clear_stash if $self->use_clean_stash;
 
     $self->debug( "rendering document $node" );
 
-    my $output;
-
-    $output =  $self->_render( 'pre', $node, $args );
-    $output .= $self->render( $node->documentElement );
+    my $output =  $self->_render( 'pre', $node, $args );
+    $output .= $self->render( $node->documentElement, $args );
     $output .= $self->_render( 'post', $node, $args );
+
+    return $output;
 }
 
 1;
 
-
+__END__
