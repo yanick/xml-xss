@@ -2,7 +2,7 @@ package XML::XSS;
 
 =head1 NAME
 
-XML::XSS - a XML stylesheet system
+XML::XSS - XML Stylesheet System
 
 =head1 SYNOPSIS
 
