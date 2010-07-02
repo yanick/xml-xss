@@ -8,7 +8,7 @@ has stylesheet => (
     weak_ref => 1,
     is       => 'ro',
     required => 1,
-    handles  => [qw/ render debug info log /],
+    handles  => [qw/ render debug info log stash /],
 );
 
 has _within_apply => ( is => 'rw', );
