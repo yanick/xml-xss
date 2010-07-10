@@ -11,12 +11,33 @@ use Test::More;
 
 use XML::XSS;
 
+sub get :Tests {
+    my $self = shift;
+
+    my $xss = $self->{xss};
+
+    my %type = (
+        'foo' => 'XML::XSS::Element',
+        '*' => 'XML::XSS::Element',
+        '#document' => 'XML::XSS::Document',
+        '#text' => 'XML::XSS::Text',
+        '#comment' => 'XML::XSS::Comment',
+        '#pi' => 'XML::XSS::ProcessingInstruction',
+    );
+
+    while( my ( $type, $class ) = each %type ) {
+        isa_ok $xss->get($type) => $class;
+    }
+
+}
+
 sub render_many :Tests {
     my $self = shift;
 
     $self->{doc} = '<doc><foo><bar/><baz/><bar/></foo></doc>';
 
     $self->{xss}->set( foo => {
+            showtag => 1,
             content => sub { $_[0]->render( $_[1]->findnodes('bar') ) } 
         },
     );
@@ -29,7 +50,7 @@ sub all_types :Tests {
     local $TODO = "some types left to deal with";
     my $self = shift;
 
-    $self->{doc} = <<'END_XML';
+    my $doc = $self->{doc} = <<'END_XML';
 <doc>
     <?foo attr1="val1" ?>
     <!-- this is a comment -->
@@ -37,8 +58,9 @@ sub all_types :Tests {
 </doc>
 END_XML
 
-    ok eval { $self->render_ok( 'unknown' ); 1 };
-    
+    chop $doc;
+
+    $self->render_ok( $doc );
 }
 
 

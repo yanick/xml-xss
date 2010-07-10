@@ -95,8 +95,11 @@ If set to a true value, the open and closing tags of the xml element are printed
 if not, they are omited.  
 
 C<showtag> defaults to true 
-unless the attribute C<pre> is defined.  This exception is to accomodate the
-common use of C<pre> to replace the tags with something else.
+unless either the attribute C<pre> or C<content> is defined. 
+This exception is to accomodate the
+common use of C<pre> to replace the tags with something else, or
+when C<content> is used to provide a templated replacement for the
+element.
 
     $css->set( 'subsection' => { 
         pre  => '<section level="2">',
@@ -192,7 +195,8 @@ sub apply {
     my $w = XML::Writer->new( OUTPUT => \$output );
 
     my $showtag =
-      $self->has_showtag ? $self->showtag : $self->has_pre ? 0 : 1;
+      $self->has_showtag ? $self->showtag 
+        : $self->has_pre || $self->has_content ? 0 : 1;
 
     my $name;
     if ($showtag) {
@@ -237,6 +241,46 @@ sub clone {
     return bless {%$self}, ref $self;
 }
 
+use overload
+    '.' => '_concat_overload',
+    'bool' => sub { 1 };
+
+sub _concat_overload {
+    my ( $self, $attr ) = @_;
+
+    my $magic = bless {
+        object => $self,
+        'method' => 'set_' . $attr,
+    }, 'XML::XSS::Role::RenderAttribute::Sugar';
+
+    return $magic;
+}
+
+package XML::XSS::Role::RenderAttribute::Sugar;
+
+use XML::XSS;
+
+use overload 
+    '<<=' => '_set_verbatim',
+    '<<'  => '_set_xsst',
+    '=' => sub { shift },
+    'bool' => sub { 1 };
+
+sub _set_verbatim {
+    my ( $self, $value ) = @_;
+
+    my $method = $self->{'method'};
+    my $object = $self->{object};
+    $object->$method( $value );
+
+    return $self;
+}
+
+sub _set_xsst {
+    my ( $self, $value ) = @_;
+
+    $self <<= XML::XSS::xsst( $value );
+}
 
 1;
 

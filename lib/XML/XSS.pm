@@ -1,5 +1,6 @@
 package XML::XSS;
 
+
 =head1 NAME
 
 XML::XSS - XML Stylesheet System
@@ -136,6 +137,7 @@ use MooseX::SemiAffordanceAccessor;
 use Moose;
 use MooseX::AttributeHelpers;
 use MooseX::ClassAttribute;
+use Moose::Exporter;
 
 use XML::LibXML;
 
@@ -143,10 +145,18 @@ use XML::XSS::Element;
 use XML::XSS::Document;
 use XML::XSS::Text;
 use XML::XSS::Comment;
+use XML::XSS::ProcessingInstruction;
 
 no warnings qw/ uninitialized /;
 
-with qw/ MooseX::LogDispatch::Levels /;
+with qw/ MooseX::LogDispatch::Levels 
+    XML::XSS::Role::Template
+/;
+
+Moose::Exporter->setup_import_methods(
+    as_is => ['xsst'],
+);
+
 
 has log_dispatch_conf => (
     is       => 'ro',
@@ -164,6 +174,15 @@ has log_dispatch_conf => (
 );
 
 has log_level => ( is => 'rw', default => 'info' );
+
+use overload
+    '.' => '_concat_overload',
+    '""' => sub { return ref shift };
+
+sub _concat_overload {
+    my ( $self, $elt ) = @_;
+    return $self->get($elt);
+}
 
 =head1 ATTRIBUTES
 
@@ -316,6 +335,13 @@ has 'catchall_element' => (
     lazy => 1,
 );
 
+has pi => (
+    is      => 'ro',
+    default => sub {
+        XML::XSS::ProcessingInstruction->new( stylesheet => $_[0] );
+    },
+);
+
 =head2 stash
 
 The stylesheet has a stash (an hashref) that is accessible to all the
@@ -366,7 +392,7 @@ Sets attributes for a rendering node.
 
 The C<$name> can be 
 an XML element name, or one of the special keywords C<#document>,
-C<#text>, C<#comment>, C<#processing_instruction> or C<*> (for the
+C<#text>, C<#comment>, C<#pi> or C<*> (for the
 I<catch-all> element), 
 which will resolve to the corresponding rendering object.
 
@@ -389,17 +415,34 @@ value.
 sub set {
     my ( $self, $name, $attrs ) = @_;
 
-    given ($name) {
-        when ('#document') {
-            $self->document->set(%$attrs);
+    $self->get($name)->set(%$attrs);
+}
+
+sub get {
+    my ( $self, $name ) = @_;
+
+    given ( $name ) {
+        when ( '#document' ) {
+            return $self->document;
         }
-        when ('*') {
-            $self->catchall_element->set( %$attrs );
+        when( '#text' ) {
+            return $self->text;
+        }
+        when( '#comment' ) {
+            return $self->comment;
+        }
+        when( '#pi' ) {
+            return $self->pi;
+        }
+        when( '*' ) {
+            return $self->catchall_element;
         }
         default {
-            $self->element($name)->set(%$attrs);
+            return $self->element($name);
         }
     }
+
+
 }
 
 =head2 render( $xml, \%args )
@@ -516,6 +559,9 @@ sub resolve {
         }
         when ( 'XML::LibXML::Comment' ) {
             return $self->comment;
+        }
+        when ( 'XML::LibXML::PI' ) {
+            return $self->pi;
         }
         default {
             die "unknown node type: $type";

@@ -16,7 +16,15 @@ sub overload_basic :Tests {
 
     my $xss = $self->{xss};
 
-    $xss.'foo'.'pre' = 'X';
+    isa_ok $xss.'foo' => 'XML::XSS::Element';
+
+    isa_ok $xss.'foo'.'pre' => 'XML::XSS::Role::RenderAttribute::Sugar';
+
+    $xss.'foo'.'pre' <<= 'X';
+
+    $self->render_ok( '<doc>X</doc>' );
+
+    $xss.'foo'.'pre' << 'X';
 
     $self->render_ok( '<doc>X</doc>' );
 
