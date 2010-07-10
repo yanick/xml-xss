@@ -1,4 +1,4 @@
-xml-xss=~/work/perl-modules/xml-xss CD=. {
+xml-xss=~/work/perl-modules/XML-XSS CD=. {
 lib Files=lib {
     XML/XSS.pm
     XML/XSS/Element.pm

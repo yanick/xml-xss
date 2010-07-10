@@ -28,11 +28,7 @@ sub line_count :Tests {
 
     eval { $f->() };
     
-    diag "!".XML::XSS::Role::Template::_parse('<-% die "urgh" %>', 1,
-    1) ."!";
-
     like $@ => qr/$filename line $line/;
-
 
     pass;
 }
