@@ -51,6 +51,7 @@ sub _render {
     return $self->$attr->render( $self, $node, $args );
 }
 
+# http://use.perl.org/~tokuhirom/journal/36582
 __PACKAGE__->meta->add_package_symbol( '&()' => sub { } );    # dummy
 __PACKAGE__->meta->add_package_symbol( '&(""' => sub { shift->stringify } );
 __PACKAGE__->meta->add_package_symbol( '&(%=' => sub { shift->_assign_attrs(shift) } );
