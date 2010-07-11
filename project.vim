@@ -6,9 +6,9 @@ lib Files=lib {
     XML/XSS/Comment.pm
     XML/XSS/Document.pm
     XML/XSS/ProcessingInstruction.pm
-    XML/XSS/RenderAttribute.pm
+    XML/XSS/StyleAttribute.pm
     XML/XSS/Role/Renderer.pm
-    XML/XSS/Role/RenderAttribute.pm
+    XML/XSS/Role/StyleAttribute.pm
     XML/XSS/Template.pm
 }
 test Files=t {

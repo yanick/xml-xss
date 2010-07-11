@@ -11,6 +11,23 @@ use Test::More;
 
 use XML::XSS;
 
+sub overload_everybody :Tests {
+    my $self = shift;
+
+    my $xss = $self->{xss};
+
+    $xss.'#document'.'pre' *= 'doc';
+    $xss.'#comment'.'pre' *= 'comment';
+    $xss.'#text'.'pre' *= 'text';
+    $xss.'#pi'.'pre' *= 'pi';
+
+    $self->{doc} = '<?foo attr="bar" ?><doc><!-- yadah -->yadah<foo/></doc>';
+
+    $self->render_ok( 'docpi<?foo attr="bar" ?><doc>comment yadah textyadah<foo></foo></doc>' );
+
+
+}
+
 sub overload_basic :Tests {
     my $self = shift;
 

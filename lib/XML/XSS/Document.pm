@@ -105,7 +105,7 @@ sub apply {
     $self->debug( "rendering document $node" );
 
     my $output =  $self->_render( 'pre', $node, $args );
-    $output .= $self->render( $node->documentElement, $args );
+    $output .= $self->render( $node->childNodes, $args );
     $output .= $self->_render( 'post', $node, $args );
 
     return $output;

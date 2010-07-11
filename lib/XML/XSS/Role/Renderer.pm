@@ -3,6 +3,8 @@ package XML::XSS::Role::Renderer;
 #use MooseX::SemiAffordanceAccessor;
 use Moose::Role;
 
+use Scalar::Util qw/ refaddr /;
+
 has stylesheet => (
     isa      => 'XML::XSS',
     weak_ref => 1,
@@ -49,5 +51,53 @@ sub _render {
     return $self->$attr->render( $self, $node, $args );
 }
 
+__PACKAGE__->meta->add_package_symbol( '&()' => sub { } );    # dummy
+__PACKAGE__->meta->add_package_symbol( '&(""' => sub { shift->stringify } );
+__PACKAGE__->meta->add_package_symbol( '&(%=' => sub { shift->_assign_attrs(shift) } );
+__PACKAGE__->meta->add_package_symbol( '&(.' => sub { shift->_concat_overload(shift) } );
+__PACKAGE__->meta->add_package_symbol( '&(bool' => sub { 1 } );
+__PACKAGE__->meta->add_package_symbol( '&(eq' => sub { shift->_equal_overload(shift) } );
+__PACKAGE__->meta->add_package_symbol( '&(==' => sub { shift->_equal_overload(shift) } );
+__PACKAGE__->meta->add_package_symbol( '&(<<=' => sub { shift->_assign_content(shift) } );
+__PACKAGE__->meta->add_package_symbol( '&(=' => sub { shift } );
+
+
+sub stringify {
+    my $self = shift;
+    return 'XML::XSS::Element::' . refaddr $self;
+}
+
+sub _assign_content {
+    $_[0]->set_content( $_[1] );
+    $_[0];
+}
+
+sub _assign_content_xsst {
+    $_[0]->set_content( XML::XSS::xsst( $_[1] ) );
+    $_[0];
+}
+
+sub _assign_attrs {
+    my ( $self, $attrs ) = @_;
+    for ( keys %$attrs ) {
+        my $m = "set_$_";
+        $self->$m( $attrs->{$_} );
+    }
+    $self;
+}
+
+sub _equal_overload {
+    my ( $a, $b ) = @_;
+
+    return refaddr($a) == refaddr($b);
+}
+
+sub _concat_overload {
+    my ( $self, $attr ) = @_;
+
+    return $self if $attr eq 'style';
+
+    return $self->$attr;
+}
 1;
 
