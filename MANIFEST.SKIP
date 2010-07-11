@@ -5,3 +5,7 @@ i.html
 ~$
 bak$
 tmp$
+blog.*
+\.prove
+^XML-XSS.*
+MANIFEST.SKIP
