@@ -1,19 +1,21 @@
 package XML::XSS::Role::RenderAttribute;
 
 use Moose::Role;
+use XML::XSS::RenderAttribute;
 
 before '_process_options' => sub {
     my ( $class, $name, $options ) = @_;
 
-    $options->{is}        ||= 'rw';
-    $options->{reader}    ||= $name;
-    $options->{writer}    ||= "set_$name";
-    $options->{clearer}   ||= "clear_$name";
-    $options->{predicate} ||= "has_$name";
-    $options->{trigger}   ||= sub {
-        my ( $self, $value ) = @_;
-        my $method = "clear_$name";
-        $self->$method unless defined $value;
+    $options->{is}        ||= 'ro';
+    $options->{isa}       ||= 'XML::XSS::RenderAttribute';
+    $options->{default}   ||= sub {
+        return XML::XSS::RenderAttribute->new;
+    };
+
+    $options->{handles} ||= {
+        "set_$name" => 'set_value',
+        "clear_$name" => 'clear_value',
+        "has_$name" => 'has_value',
     };
 };
 

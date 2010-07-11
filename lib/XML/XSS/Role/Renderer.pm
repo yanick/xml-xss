@@ -46,14 +46,7 @@ sub set {
 sub _render {
     my ( $self, $attr, $node, $args ) = @_;
 
-    my $item = $self->$attr or return;
-
-    return $item unless ref $item;
-
-    return $item->( $self, $node, $args );
-
-    die "not implemented yet";
-
+    return $self->$attr->render( $self, $node, $args );
 }
 
 1;

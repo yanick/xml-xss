@@ -26,11 +26,11 @@ of the xml document to be rendered.
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
-use XML::Writer;
+use MooseX::Clone;
 
 use Scalar::Util qw/ refaddr /;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
@@ -156,19 +156,18 @@ Printed after the element closing tag position.
 
 =cut
 
-for (
-    qw/ process rename pre post intro extro prechildren postchildren
-    prechild postchild content showtag /
-  ) {
-    has $_ => ( traits => [qw/ XML::XSS::Role::RenderAttribute /] );
+sub render_attributes {
+    return qw/ process content showtag rename pre intro 
+    prechildren prechild postchild postchildren extro post /;
 }
+
+has [ render_attributes() ] => ( traits => [qw/ XML::XSS::Role::RenderAttribute Clone /] );
 
 before "set_$_" => sub {
     my $self = shift;
     $self->detach_from_stylesheet if $self->_within_apply;
   }
-  for qw/ process pre post rename showtag intro extro prechildren prechild
-postchild postchildren /;
+  for render_attributes();
 
 =head1 METHODS
 
@@ -194,7 +193,6 @@ sub apply {
       if $self->has_process and !$self->_render( 'process', $node, $args );
 
     my $output = $self->_render( 'pre', $node, $args );
-    my $w = XML::Writer->new( OUTPUT => \$output );
 
     my $showtag =
       $self->has_showtag ? $self->showtag 
@@ -207,8 +205,11 @@ sub apply {
           ? $self->_render( 'rename', $node, $args )
           : $node->nodeName;
 
-        $w->startTag( $name,
-            map { $_->nodeName => $_->value } $node->attributes );
+        $output .= join ' ', 
+            "<$name",
+            map { join '=', $_->nodeName, "'$_->serializeContent'" }
+                $node->attributes;
+        $output .= '>';
     }
 
     $output .= $self->_render( 'intro', $node, $args );
@@ -230,18 +231,30 @@ sub apply {
 
     $output .= $self->_render( 'extro', $node, $args );
 
-    $w->endTag if $showtag;
+    $output .= "</$name>" if $showtag;
 
     $output .= $self->_render( 'post', $node, $args );
 
     return $output;
 }
 
+=pod
 sub clone {
     my $self = shift;
 
-    return bless {%$self}, ref $self;
+    my $x = bless {%$self}, ref $self;
+
+    my $i = $x->{is_detached};
+    $x->{is_detached} = 1;
+
+    $x->{post} = XML::XSS::RenderAttribute->new( value => $self->post->value );
+    $x->{pre} = XML::XSS::RenderAttribute->new( value => $self->pre->value );
+
+    $x->{is_detached} = $i;
+
+    return $x;
 }
+=cut
 
 use overload
     '.' => '_concat_overload',
