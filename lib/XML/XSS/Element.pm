@@ -28,6 +28,8 @@ use Moose;
 use MooseX::SemiAffordanceAccessor;
 use XML::Writer;
 
+use Scalar::Util qw/ refaddr /;
+
 with 'XML::XSS::Role::Renderer';
 
 no warnings qw/ uninitialized /;
@@ -243,7 +245,14 @@ sub clone {
 
 use overload
     '.' => '_concat_overload',
-    'bool' => sub { 1 };
+    'bool' => sub { 1 },
+    'eq' => '_equal_overload';
+
+sub _equal_overload {
+    my ( $a, $b ) = @_;
+
+    return refaddr($a) == refaddr($b);
+}
 
 sub _concat_overload {
     my ( $self, $attr ) = @_;
@@ -261,8 +270,8 @@ package XML::XSS::Role::RenderAttribute::Sugar;
 use XML::XSS;
 
 use overload 
-    '<<=' => '_set_verbatim',
-    '<<'  => '_set_xsst',
+    'x=' => '_set_verbatim',
+    '*='  => '_set_xsst',
     '=' => sub { shift },
     'bool' => sub { 1 };
 
@@ -279,7 +288,7 @@ sub _set_verbatim {
 sub _set_xsst {
     my ( $self, $value ) = @_;
 
-    $self <<= XML::XSS::xsst( $value );
+    $self->_set_verbatim( XML::XSS::xsst( $value ) );
 }
 
 1;

@@ -147,10 +147,11 @@ use XML::XSS::Text;
 use XML::XSS::Comment;
 use XML::XSS::ProcessingInstruction;
 
+use XML::XSS::Template;
+
 no warnings qw/ uninitialized /;
 
 with qw/ MooseX::LogDispatch::Levels 
-    XML::XSS::Role::Template
 /;
 
 Moose::Exporter->setup_import_methods(

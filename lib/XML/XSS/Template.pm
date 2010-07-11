@@ -1,8 +1,13 @@
-package XML::XSS::Role::Template;
+package XML::XSS::Template;
 
 use 5.10.0;
 
-use Moose::Role;
+use Moose;
+use MooseX::SemiAffordanceAccessor;
+
+use overload 
+    '&{}' => sub { $_[0]->compiled },
+    'bool' => sub { length $_[0]->code };
 
 no warnings qw/ uninitialized /;
 
@@ -10,37 +15,61 @@ our @sigils = qw/ = ~ @ /;
 
 Moose::Exporter->setup_import_methods( as_is => ['xsst'], );
 
-sub xsst($) {
-    my $template = shift;
+has template => ( isa => 'Str', is => 'rw', required => 1 );
 
-    my ( $package, $filename, $line) = caller;
+has code => ( isa => 'Str', is => 'rw' );
 
-    my $code = _parse($template, $filename, $line);
+has compiled => ( is => 'rw' );
 
-    my $sub = eval <<"END_SUB";
+has _filename => ( is => 'rw' );
+has _line => ( is => 'rw' );
+
+sub BUILD {
+    my $self = shift;
+
+    $self->_parse_template;
+
+    my $sub = <<"END_SUB";
 sub {
 my ( \$r, \$node, \$args ) = \@_;
 local *STDOUT;
 my \$output;
 open STDOUT, '>', \\\$output or die;
-$code;
+@{[ $self->code ]}
 return \$output;
 }
 END_SUB
 
+    $self->set_code( $sub );
+
+    $self->set_compiled( eval $sub );
     die $@ if $@;
 
-    return $sub;
 }
 
-sub _parse {
-    my ( $template, $filename, $line ) = @_;
+
+
+sub xsst($) {
+    my $template = shift;
+
+    my ( undef, $filename, $line) = caller;
+
+    return XML::XSS::Template->new(
+        _filename => $filename,
+        _line => $line,
+        template => $template,
+    );
+}
+
+sub _parse_template {
+    my $self = shift;
 
     my $sigil_re = '[' . join( '', @sigils ) . ']';
 
-    my @tokens = split /(<-?%$sigil_re?|%-?>)/, $template;
+    my @tokens = split /(<-?%$sigil_re?|%-?>)/, $self->template;
 
     my @parsed;
+
   TOKEN:
     while (@tokens) {
         my $token = shift @tokens;
@@ -49,12 +78,12 @@ sub _parse {
             if ( $1 and @parsed and $parsed[-1][0] ) {
                 $parsed[-1][1] =~ s/\s+\Z//;
             }
-            _parse_block( $token, \@tokens, \@parsed, \$filename, \$line );
+            $self->_parse_block( $token, \@tokens, \@parsed );
         }
         else {
             # it's a verbatim block
-            my ( $f, $l ) = ( $filename, $line );
-            $line += $token =~ y/\n//;
+            my ( $f, $l ) = ( $self->_filename, $self->_line );
+            $self->_set_line( $l + $token =~ y/\n// );
             if ( @parsed and $parsed[-1][2] ) {
                 $token =~ s/^\s+//;
             }
@@ -77,11 +106,13 @@ sub _parse {
 
     }
 
-    return $code;
+    return $self->set_code($code);
 }
 
 sub _parse_block {
-    my ( $token, $tokens, $parsed, $filename_ref, $line_ref ) = @_;
+    my $self = shift;
+
+    my ( $token, $tokens, $parsed ) = @_;
 
         my $code;
         my $closing_tag;
@@ -97,9 +128,9 @@ sub _parse_block {
             $code .= $t;
         }
 
-        my ( $f, $l ) = ( $$filename_ref, $$line_ref );
+        my ( $f, $l ) = ( $self->_filename, $self->_line );
 
-        $$line_ref += $code =~ y/\n//;
+        $self->_set_line( $l + $code =~ y/\n// );
 
         die "stylesheet <% %>s are unbalanced: <%$token $code\n"
             unless $closing_tag;

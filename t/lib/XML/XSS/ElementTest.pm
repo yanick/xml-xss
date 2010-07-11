@@ -3,13 +3,13 @@ package XML::XSS::ElementTest;
 use strict;
 use warnings;
 
-no warnings qw/ uninitialized /;
-
 use base qw/ My::Test::Class /;
 
 use Test::More;
 
 use XML::XSS;
+
+no warnings qw/ uninitialized /;
 
 sub everything :Tests {
     my $self = shift;

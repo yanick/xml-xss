@@ -93,7 +93,7 @@ sub sigil_render :Tests {
 
 sub xsst_basic :Tests {
     my $code = xsst q{Foo!};
-    is ref $code => 'CODE', 'produces a sub ref';
+    is ref $code => 'XML::XSS::Template', 'produces a sub ref';
 
     is $code->() => 'Foo!', 'and returns the right stuff';
 

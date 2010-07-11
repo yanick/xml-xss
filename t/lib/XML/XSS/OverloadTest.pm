@@ -20,13 +20,13 @@ sub overload_basic :Tests {
 
     isa_ok $xss.'foo'.'pre' => 'XML::XSS::Role::RenderAttribute::Sugar';
 
-    $xss.'foo'.'pre' <<= 'X';
+    $xss.'foo'.'pre' x= 'X';
 
     $self->render_ok( '<doc>X</doc>' );
 
-    $xss.'foo'.'pre' << 'X';
+    $xss.'foo'.'pre' *= 'Y';
 
-    $self->render_ok( '<doc>X</doc>' );
+    $self->render_ok( '<doc>Y</doc>' );
 
 }
 

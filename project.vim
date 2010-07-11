@@ -8,7 +8,7 @@ lib Files=lib {
     XML/XSS/ProcessingInstruction.pm
     XML/XSS/Role/Renderer.pm
     XML/XSS/Role/RenderAttribute.pm
-    XML/XSS/Role/Template.pm
+    XML/XSS/Template.pm
 }
 test Files=t {
     basic.t
@@ -16,6 +16,7 @@ test Files=t {
     lib/XML/XSSTest.pm
     lib/XML/XSS/CommentTest.pm
     lib/XML/XSS/TemplateTest.pm
+    lib/XML/XSS/ElementTest.pm
     lib/XML/XSS/OverloadTest.pm
 }
 }
