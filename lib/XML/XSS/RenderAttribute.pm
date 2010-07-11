@@ -6,6 +6,8 @@ use MooseX::Clone;
 
 with 'MooseX::Clone';
 
+no warnings qw/ uninitialized /;
+
 has 'value' => ( is => 'rw',
     clearer => 'clear_value',
     predicate => 'has_value',
@@ -38,7 +40,10 @@ use overload
     'bool' => sub { $_[0]->value },
     '""' => sub { $_[0]->value },
     '+' => sub { $_[0]->value + $_[1] },
-    '0+' => sub { $_[0]->value };
+    '0+' => sub { $_[0]->value },
+    '*=' => sub { $_[0]->set_value( $_[1] ) },
+    'x=' => sub { $_[0]->set_value( XML::XSS::xsst( $_[1] ) ) },
+    '=' => sub { shift };
 
 1;
 

@@ -238,28 +238,34 @@ sub apply {
     return $output;
 }
 
-=pod
-sub clone {
-    my $self = shift;
-
-    my $x = bless {%$self}, ref $self;
-
-    my $i = $x->{is_detached};
-    $x->{is_detached} = 1;
-
-    $x->{post} = XML::XSS::RenderAttribute->new( value => $self->post->value );
-    $x->{pre} = XML::XSS::RenderAttribute->new( value => $self->pre->value );
-
-    $x->{is_detached} = $i;
-
-    return $x;
-}
-=cut
-
 use overload
+    '%=' => '_assign_attrs',
     '.' => '_concat_overload',
     'bool' => sub { 1 },
-    'eq' => '_equal_overload';
+    'eq' => '_equal_overload',
+    '==' => '_equal_overload',
+    '<<=' => '_assign_content',
+    '""' => sub {
+        my $self = shift;
+        return 'XML::XSS::Element::'.refaddr $self;
+    },
+    '=' => sub { shift };
+
+sub _assign_content { 
+    $_[0]->set_content( $_[1] ); $_[0];
+}
+sub _assign_content_xsst { $_[0]->set_content( XML::XSS::xsst( $_[1] ) );
+        $_[0]; }
+
+sub _assign_attrs { 
+    my ( $self, $attrs ) = @_;
+    for ( keys %$attrs ) {
+        my $m = "set_$_";
+        $self->$m( $attrs->{$_} );
+    }
+    $self;
+}
+
 
 sub _equal_overload {
     my ( $a, $b ) = @_;
@@ -270,12 +276,9 @@ sub _equal_overload {
 sub _concat_overload {
     my ( $self, $attr ) = @_;
 
-    my $magic = bless {
-        object => $self,
-        'method' => 'set_' . $attr,
-    }, 'XML::XSS::Role::RenderAttribute::Sugar';
+    return $self if $attr eq 'style';
 
-    return $magic;
+    return $self->$attr;
 }
 
 package XML::XSS::Role::RenderAttribute::Sugar;

@@ -16,7 +16,6 @@ sub line_count :Tests {
 
     my( undef, $filename, $line ) = sub { caller }->();
     my $f = xsst q{ <% die "urgh" %> };  $line++;
-
     eval { $f->() };
 
     like $@ => qr/$filename line $line/;

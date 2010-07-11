@@ -94,8 +94,8 @@ sub _parse_template {
     my $code;
     my ($pf, $pl);
     for my $block (@parsed) {
-        $code .= join( ' ', "#line ", $block->[4], $block->[3] ) . "\n" 
-            unless $block->[4] == $pl and $block->[3] eq $pf;
+        $code .= join( ' ', "\n#line ", $block->[4], $block->[3] ) . "\n" 
+           unless $block->[4] == $pl and $block->[3] eq $pf;
         ( $pf, $pl ) = ($block->[3], $block->[4] );
         if ( $block->[0] and length $block->[1] ) {
             $block->[1] =~ s/\|/\\\|/g;

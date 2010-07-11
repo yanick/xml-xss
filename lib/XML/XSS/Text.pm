@@ -119,7 +119,7 @@ sub apply {
     }
 
     if ( $self->has_filter ) {
-        $text = $self->filter->() for $text;  # quick alias to $_
+        $text = $self->filter->value()->() for $text;  # quick alias to $_
     }
 
     $output .= $text;

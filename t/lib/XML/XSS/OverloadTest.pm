@@ -18,16 +18,39 @@ sub overload_basic :Tests {
 
     isa_ok $xss.'foo' => 'XML::XSS::Element';
 
-    isa_ok $xss.'foo'.'pre' => 'XML::XSS::Role::RenderAttribute::Sugar';
+    my $foo = $xss.'foo';
+    isa_ok $foo => 'XML::XSS::Element';
 
-    $xss.'foo'.'pre' x= 'X';
+    isa_ok $xss.'foo'.'pre' => 'XML::XSS::RenderAttribute';
+    isa_ok $foo.'pre' => 'XML::XSS::RenderAttribute';
+
+    $xss.'foo'.'pre' *= 'X';
 
     $self->render_ok( '<doc>X</doc>' );
 
-    $xss.'foo'.'pre' *= 'Y';
+    $xss.'foo'.'pre' x= '<%= "Y" %>';
 
     $self->render_ok( '<doc>Y</doc>' );
 
+
+    $foo->set_pre('X');
+    $self->render_ok( '<doc>X</doc>' );
+
+    $xss.'foo'.'pre' *= undef;
+
+    $xss.'foo'.'content' *= '<%= \o/ %>';
+    $self->render_ok( '<doc><%= \o/ %></doc>' );
+
+    $xss.'foo'.'content' x= q{<%= '\o/' %>};
+    $self->render_ok( '<doc>\o/</doc>' );
+
+    $xss.'foo'.'style' %= {
+        pre =>  'A',
+        post => 'Z',
+        content => undef,
+    };
+
+    $self->render_ok( '<doc>AZ</doc>' );
 }
 
 

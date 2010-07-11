@@ -6,6 +6,7 @@ lib Files=lib {
     XML/XSS/Comment.pm
     XML/XSS/Document.pm
     XML/XSS/ProcessingInstruction.pm
+    XML/XSS/RenderAttribute.pm
     XML/XSS/Role/Renderer.pm
     XML/XSS/Role/RenderAttribute.pm
     XML/XSS/Template.pm
