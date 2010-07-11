@@ -59,7 +59,7 @@ If defined, its value is used instead of the original text.
 =cut
 
 has replace => ( 
-    traits => [ qw/ XML::XSS::Role::RenderAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
 );
 
 =head2 filter
@@ -75,7 +75,7 @@ even if C<replace> is used.
 =cut
 
 has filter => (
-    traits => [ qw/ XML::XSS::Role::RenderAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
 );
 
 
@@ -90,7 +90,7 @@ Printed after the text.
 =cut
 
 has [ qw/ pre post / ] => (
-    traits => [ qw/ XML::XSS::Role::RenderAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
 );
 
 sub clear {

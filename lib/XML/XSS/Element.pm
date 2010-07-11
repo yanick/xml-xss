@@ -161,7 +161,7 @@ sub render_attributes {
     prechildren prechild postchild postchildren extro post /;
 }
 
-has [ render_attributes() ] => ( traits => [qw/ XML::XSS::Role::RenderAttribute Clone /] );
+has [ render_attributes() ] => ( traits => [qw/ XML::XSS::Role::StyleAttribute Clone /] );
 
 before "set_$_" => sub {
     my $self = shift;
@@ -281,7 +281,7 @@ sub _concat_overload {
     return $self->$attr;
 }
 
-package XML::XSS::Role::RenderAttribute::Sugar;
+package XML::XSS::Role::StyleAttribute::Sugar;
 
 use XML::XSS;
 

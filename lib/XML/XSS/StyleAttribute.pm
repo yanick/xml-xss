@@ -1,4 +1,4 @@
-package XML::XSS::RenderAttribute;
+package XML::XSS::StyleAttribute;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
@@ -21,7 +21,7 @@ after 'set_value' => sub {
 };
 
 #sub clone {
-#    return XML::XSS::RenderAttribute->new(
+#    return XML::XSS::StyleAttribute->new(
 #        value => $_[0]->value
 #    );
 #}

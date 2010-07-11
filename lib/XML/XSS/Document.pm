@@ -73,7 +73,7 @@ Printed before the document's nodes.
 Printed after the document nodes.
 
 =cut 
-has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::RenderAttribute / ] );
+has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
 
 =head2 METHODS
 

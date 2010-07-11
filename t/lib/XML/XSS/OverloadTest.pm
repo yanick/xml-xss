@@ -21,8 +21,8 @@ sub overload_basic :Tests {
     my $foo = $xss.'foo';
     isa_ok $foo => 'XML::XSS::Element';
 
-    isa_ok $xss.'foo'.'pre' => 'XML::XSS::RenderAttribute';
-    isa_ok $foo.'pre' => 'XML::XSS::RenderAttribute';
+    isa_ok $xss.'foo'.'pre' => 'XML::XSS::StyleAttribute';
+    isa_ok $foo.'pre' => 'XML::XSS::StyleAttribute';
 
     $xss.'foo'.'pre' *= 'X';
 

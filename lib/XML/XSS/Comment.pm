@@ -52,7 +52,7 @@ Same attribute behaviors as in C<XML::XSS::Text>.
 
 =cut 
 
-has [ qw/ showtag pre post rename replace process filter / ] => ( traits => [ qw/ XML::XSS::Role::RenderAttribute / ] );
+has [ qw/ showtag pre post rename replace process filter / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
 
 sub apply {
     my ( $self, $node, $args ) = @_;
