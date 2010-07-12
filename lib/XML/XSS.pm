@@ -1,6 +1,5 @@
 package XML::XSS;
 
-
 =head1 NAME
 
 XML::XSS - XML Stylesheet System
@@ -34,6 +33,9 @@ XML::XSS - XML Stylesheet System
     END_XML
 
 =head1 DESCRIPTION
+
+Caution: this is alpha-quality software. Here be enough dragons to send 
+Beowulf packing. Caveat maximus emptor.
 
 C<XML::XSS> is a XML stylesheet system loosely similar to 
 CSS and XSLT.  A C<XML::XSS> object is made up of 
@@ -71,16 +73,19 @@ a special I<catch-all> C<XML::LibXML::Element> also exists that will
 be applied to any document element not explicitly matched by one of the 
 element rules.
 
-=head2 Rules Rendering Attributes
+=head2 Rules Style Attributes
 
-Each rule has a set of rendering attributes control how the matching
-document node is transformed.  The attributes of each rule type, alongside
-their behaviors, are given in the different rule type manpages.
+Each rule has a set of style attributes that control how the matching
+document node is transformed.  The different types of rule
+(L<XML::XSS::Document>, L<XML::XSS::Element>,
+L<XML::XSS::Text>, L<XML::XSS::Comment> and L<XML::XSS::ProcessingInstruction>) 
+have each a different set of style attributes, which are
+described in their relative manpages.
 
-Unless specified otherwise, a rendering attribute can be assigned a
+Unless specified otherwise, a style attribute can be assigned a
 scalar value or a reference to a sub.  In the second case, the sub will
 be evaluated in the context of the processed node and its return value will
-be used as the rendering attribute value.
+be used as the style attribute value.
 
 Upon execution, the sub references will be passed three parameters: 
 the invoking rule, the C<XML::LibXML> node it is rendering and the arguments 
