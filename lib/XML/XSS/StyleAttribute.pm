@@ -1,6 +1,6 @@
 package XML::XSS::StyleAttribute;
 BEGIN {
-  $XML::XSS::StyleAttribute::VERSION = '0.1_0';
+  $XML::XSS::StyleAttribute::VERSION = '0.1_1';
 }
 
 use Moose;

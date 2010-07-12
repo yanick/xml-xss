@@ -1,6 +1,6 @@
 package XML::XSS::ProcessingInstruction;
 BEGIN {
-  $XML::XSS::ProcessingInstruction::VERSION = '0.1_0';
+  $XML::XSS::ProcessingInstruction::VERSION = '0.1_1';
 }
 
 use 5.10.0;

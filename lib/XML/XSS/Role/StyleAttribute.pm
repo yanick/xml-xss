@@ -1,6 +1,6 @@
 package XML::XSS::Role::StyleAttribute;
 BEGIN {
-  $XML::XSS::Role::StyleAttribute::VERSION = '0.1_0';
+  $XML::XSS::Role::StyleAttribute::VERSION = '0.1_1';
 }
 
 use Moose::Role;

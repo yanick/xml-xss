@@ -1,6 +1,6 @@
 package XML::XSS::Role::Renderer;
 BEGIN {
-  $XML::XSS::Role::Renderer::VERSION = '0.1_0';
+  $XML::XSS::Role::Renderer::VERSION = '0.1_1';
 }
 
 #use MooseX::SemiAffordanceAccessor;

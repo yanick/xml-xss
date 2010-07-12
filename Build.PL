@@ -21,7 +21,7 @@ my %module_build_args = (
     'Yanick Champoux <yanick@cpan.org>'
   ],
   'dist_name' => 'XML-XSS',
-  'dist_version' => '0.1_0',
+  'dist_version' => '0.1_1',
   'license' => 'perl',
   'module_name' => 'XML::XSS',
   'recommends' => {},
