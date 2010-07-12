@@ -1,8 +1,15 @@
 package XML::XSS::Comment;
+BEGIN {
+  $XML::XSS::Comment::VERSION = '0.1_0';
+}
 
 =head1 NAME 
 
 XML::XSS::Comment - XML::XSS comment stylesheet rule
+
+=head1 VERSION
+
+version 0.1_0
 
 =head1 SYNOPSIS
 
@@ -95,5 +102,3 @@ sub apply {
 }
 
 1;
-
-

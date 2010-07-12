@@ -1,4 +1,7 @@
 package XML::XSS::Role::Renderer;
+BEGIN {
+  $XML::XSS::Role::Renderer::VERSION = '0.1_0';
+}
 
 #use MooseX::SemiAffordanceAccessor;
 use Moose::Role;

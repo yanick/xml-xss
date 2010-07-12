@@ -1,8 +1,15 @@
 package XML::XSS;
+BEGIN {
+  $XML::XSS::VERSION = '0.1_0';
+}
 
 =head1 NAME
 
 XML::XSS - XML Stylesheet System
+
+=head1 VERSION
+
+version 0.1_0
 
 =head1 SYNOPSIS
 

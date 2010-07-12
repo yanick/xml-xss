@@ -1,4 +1,7 @@
 package XML::XSS::Template;
+BEGIN {
+  $XML::XSS::Template::VERSION = '0.1_0';
+}
 
 use 5.10.0;
 
