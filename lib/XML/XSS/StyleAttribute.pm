@@ -1,4 +1,5 @@
 package XML::XSS::StyleAttribute;
+
 # ABSTRACT: style attribute for XML::XSS stylesheet rule
 
 use Moose;
@@ -7,13 +8,16 @@ use MooseX::Clone;
 
 with 'MooseX::Clone';
 
+use Scalar::Util qw/ refaddr /;
+
 no warnings qw/ uninitialized /;
 
-has 'value' => ( is => 'rw',
-    clearer => 'clear_value',
+has 'value' => (
+    is        => 'rw',
+    clearer   => 'clear_value',
     predicate => 'has_value',
-    traits => [ qw/ Clone / ],
-    );
+    traits    => [qw/ Clone /],
+);
 
 after 'set_value' => sub {
     my $self = shift;
@@ -37,15 +41,19 @@ sub render {
     return ref $value ? $value->( $r, $node, $args ) : $value;
 }
 
-use overload 
-    'bool' => sub { $_[0]->value },
-    '""' => sub { $_[0]->value },
-    '+' => sub { $_[0]->value + $_[1] },
-    '0+' => sub { $_[0]->value },
-    '*=' => sub { $_[0]->set_value( $_[1] ) },
-    'x=' => sub { $_[0]->set_value( XML::XSS::xsst( $_[1] ) ) },
-    '=' => sub { shift };
+use overload
+  'bool' => sub { $_[0]->value },
+  '""'   => sub { $_[0]->value },
+  '+'    => sub { $_[0]->value + $_[1] },
+  '0+'   => sub { $_[0]->value },
+  '*='   => sub { $_[0]->set_value( $_[1] ) },
+  'x='   => sub { $_[0]->set_value( XML::XSS::xsst( $_[1] ) ) },
+  '='    => sub { shift },
+  'eq'   => sub {
+    my ( $a, $b ) = @_;
+    return ref($a) eq ref($b)
+      and refaddr($a) == refaddr($b);
+  };
 
 1;
-
 
