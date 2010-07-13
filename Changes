@@ -1,7 +1,10 @@
 Revision history for XML::XSS
 
-0.1_1     2010-07-11 22:12:25 America/Montreal
-    * Add a Changes file.
+0.1_1     2010-07-12 21:23:22 America/Montreal
+    * add a Changes file.
+    * add Pod::Weaver in dist::zilla config.
+    * try to fix the bug seen at
+        http://www.cpantesters.org/cpan/report/30de628a-8d6d-11df-aac3-f82b01ce9048
 
 0.1_0     2010-07-11 America/Montreal
     * Original release.

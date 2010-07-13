@@ -2,8 +2,47 @@ package XML::XSS::Document;
 BEGIN {
   $XML::XSS::Document::VERSION = '0.1_1';
 }
+# ABSTRACT: XML::XSS document stylesheet rule
 
-=head1 NAME 
+
+use Moose;
+use MooseX::SemiAffordanceAccessor;
+
+with 'XML::XSS::Role::Renderer';
+
+no warnings qw/ uninitialized /;
+
+
+has use_clean_stash => (
+    default => 1,
+    is      => 'rw',
+);
+
+has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
+
+
+sub apply {
+    my ( $self, $node, $args ) = @_;
+    $args ||= {};
+
+    $self->stylesheet->clear_stash if $self->use_clean_stash;
+
+    $self->debug( "rendering document $node" );
+
+    my $output =  $self->_render( 'pre', $node, $args );
+    $output .= $self->render( $node->childNodes, $args );
+    $output .= $self->_render( 'post', $node, $args );
+
+    return $output;
+}
+
+1;
+
+
+
+=pod
+
+=head1 NAME
 
 XML::XSS::Document - XML::XSS document stylesheet rule
 
@@ -32,15 +71,6 @@ be rendered.
 Note that this is the C<XML::LibXML::Document> object,
 and not the document root element.
 
-=cut
-
-use Moose;
-use MooseX::SemiAffordanceAccessor;
-
-with 'XML::XSS::Role::Renderer';
-
-no warnings qw/ uninitialized /;
-
 =head1 ATTRIBUTES 
 
 =head2 use_clean_stash
@@ -55,13 +85,6 @@ Accessor getter.
 =head3 set_use_clean_stash($bool)
 
 Accessor setter.
-
-=cut
-
-has use_clean_stash => (
-    default => 1,
-    is      => 'rw',
-);
 
 =head1 RENDERING ATTRIBUTES
 
@@ -78,9 +101,6 @@ Printed before the document's nodes.
 =head2 post
 
 Printed after the document nodes.
-
-=cut 
-has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
 
 =head2 METHODS
 
@@ -101,23 +121,18 @@ A shortcut to the attribute setters.
 Applies the rule to the C<$node>, passing along the optional C<$args>,
 and returns the resulting string.
 
+=head1 AUTHOR
+
+  Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
 
-sub apply {
-    my ( $self, $node, $args ) = @_;
-    $args ||= {};
-
-    $self->stylesheet->clear_stash if $self->use_clean_stash;
-
-    $self->debug( "rendering document $node" );
-
-    my $output =  $self->_render( 'pre', $node, $args );
-    $output .= $self->render( $node->childNodes, $args );
-    $output .= $self->_render( 'post', $node, $args );
-
-    return $output;
-}
-
-1;
 
 __END__

@@ -2,6 +2,7 @@ package XML::XSS::Template;
 BEGIN {
   $XML::XSS::Template::VERSION = '0.1_1';
 }
+# ABSTRACT: XML::XSS templates
 
 use 5.10.0;
 
@@ -166,3 +167,28 @@ sub _parse_block {
 
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+XML::XSS::Template - XML::XSS templates
+
+=head1 VERSION
+
+version 0.1_1
+
+=head1 AUTHOR
+
+  Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+

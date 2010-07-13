@@ -2,146 +2,8 @@ package XML::XSS;
 BEGIN {
   $XML::XSS::VERSION = '0.1_1';
 }
+# ABSTRACT: XML stylesheet system
 
-=head1 NAME
-
-XML::XSS - XML Stylesheet System
-
-=head1 VERSION
-
-version 0.1_1
-
-=head1 SYNOPSIS
-
-    use XML::XSS;
-
-    my $xss = XML::XSS->new;
-
-    $xss->set( pod => { 
-        pre => "=pod\n", 
-        post => "=cut\n", 
-    } );
-
-    $xss->set( section => { 
-        pre => \&pre_section 
-    } );
-
-    sub pre_section {
-        my ( $self, $node, $args ) = @_;
-
-        return "=head1 " . $node->findvalue( '@title' ) . "\n\n";
-    }
-
-    print $xss->render( <<'END_XML' );
-    <pod>
-        <section title="NAME">XML::XSS - a XML stylesheet system</section>
-        ...
-    </pod>
-    END_XML
-
-=head1 DESCRIPTION
-
-Caution: this is alpha-quality software. Here be enough dragons to send 
-Beowulf packing. Caveat maximus emptor.
-
-C<XML::XSS> is a XML stylesheet system loosely similar to 
-CSS and XSLT.  A C<XML::XSS> object is made up of 
-rendering rules that dictate how the different nodes of
-an XML document are to be rendered, and can be applied 
-against one or many XML documents. 
-
-C<XML::XSS> is a rewrite of L<XML::XPathScript>, which was
-initially part of the L<AxKit> framework.
-
-=head2 The XML Document
-
-C<XML::XSS> uses L<XML::LibXML> under the hood as its XML DOM
-API.  Documents can be passed as strings, in which case the creation
-of the XML::LibXML object will be done behind the curtain
-
-    $xss->render( '<foo>yadah</foo>' );
-
-or the L<XML::LibXML> object can be passed directly
-
-    my $doc = XML::LibXML->load_xml( location => 'foo.xml' );
-    $xss->render( $doc );
-    
-
-=head2 Stylesheet Rules
-
-C<XML::XSS> has 5 different kinds of rules that reflect the
-different kinds of nodes that a XML document can have (as per
-L<XML::LibXML>): L<XML::XSS::Document>, L<XML::XSS::Text>,
-L<XML::XSS::Comment>, L<XML::XSS::ProcessingInstruction> and
-L<XML::XSS::Element>. Whereas there are can many C<XML::LibXML::Element>
-rules, there is only one instance of each of the first 4 rules per
-stylesheet. In addition of the regular C<XML::LibXML::Element> rules, 
-a special I<catch-all> C<XML::LibXML::Element> also exists that will
-be applied to any document element not explicitly matched by one of the 
-element rules.
-
-=head2 Rules Style Attributes
-
-Each rule has a set of style attributes that control how the matching
-document node is transformed.  The different types of rule
-(L<XML::XSS::Document>, L<XML::XSS::Element>,
-L<XML::XSS::Text>, L<XML::XSS::Comment> and L<XML::XSS::ProcessingInstruction>) 
-have each a different set of style attributes, which are
-described in their relative manpages.
-
-Unless specified otherwise, a style attribute can be assigned a
-scalar value or a reference to a sub.  In the second case, the sub will
-be evaluated in the context of the processed node and its return value will
-be used as the style attribute value.
-
-Upon execution, the sub references will be passed three parameters: 
-the invoking rule, the C<XML::LibXML> node it is rendering and the arguments 
-ref given to C<render()>. 
-
-    $css->set( 'foo' => {
-        pre => '[[[',         
-        post => sub {        
-            my ( $self, $node, $args ) = @_;
-            return $node->findvalue( '@bar' );
-        }
-    } );
-
-=head2 Modifying Rules While Rendering
-
-Rules attributes changed while rendering only apply to 
-the current element.
-
-    $xss->set( 'section' => { 
-        process => sub {
-            my ( $self, $node ) = @_;
-            $self->stash->{section_nbr}++;
-            if ( $self->stash->{section_nbr} == 5 ) {
-                # only applies to the one section
-                $self->set_pre( '>>> this is the fifth section <<<' ); 
-            }
-            return 1;
-        }
-    } );
-
-If you want to change the global rule, you have to access the rule
-from the stylesheet, like so
-
-    $xss->set( 'section' => { 
-        process => sub {
-            my ( $self, $node ) = @_;
-            $self->stash->{section_nbr}++;
-            if ( $self->stash->{section_nbr} == 6 ) {
-                $self->stylesheet->element('section')->set_pre( 
-                    '>>> this is after the fifth section <<<' 
-                ); 
-            }
-            return 1;
-        }
-    } );
-
-
-
-=cut
 
 use 5.10.0;
 
@@ -197,19 +59,6 @@ sub _concat_overload {
     return $self->get($elt);
 }
 
-=head1 ATTRIBUTES
-
-=head2 document 
-
-The document rule. Note that this matches against the
-C<XML::LibXML::Document> node, not the root element node of
-the document.
-
-=head3 document()
-
-Attribute getter.
-
-=cut
 
 has document => (
     is      => 'ro',
@@ -219,27 +68,6 @@ has document => (
 );
 
 
-=head2 text 
-
-The text rule.
-
-=head3 text()
-
-Attribute getter.
-
-=head3 set_text( ... )
-
-Shortcut for
-
-    $xss->text->set( ... );
-
-=head3 clear_text()
-
-Shortcut for
-
-    $xss->text->clear;
-
-=cut
 
 has 'text' => (
     is      => 'ro',
@@ -250,21 +78,6 @@ has 'text' => (
     },
 );
 
-=head2 comment
-
-The comment rule.
-
-=head3 comment()
-
-Attribute getter.
-
-=head3 set_comment( ... )
-
-Shortcut for 
-
-    $xss->comment->set( ... )
-
-=cut
 
 has 'comment' => (
     is => 'ro',
@@ -275,11 +88,6 @@ has 'comment' => (
     },
 );
 
-=head2 elements
-
-The collection of user-defined element rules. 
-
-=cut
 
 has '_elements' => (
     isa       => 'HashRef[XML::XSS::Element]',
@@ -292,15 +100,6 @@ has '_elements' => (
     },
 );
 
-=head3 element( $name )
-
-Returns the L<XML::XSS::Element> node associated to the tag C<$name>.
-If the element didn't already exist, it is automatically created.
-
-    my $elt = $xss->element( 'foo' );  # element for <foo>
-    $elt->set( pre => '[foo]' );
-
-=cut
 
 sub element {
     my ( $self, $name ) = @_;
@@ -324,20 +123,6 @@ sub set_element {
     }
 }
 
-=head2 catchall_element
-
-The catch-all element rule, which is applied to
-all the element nodes that aren't explicitly matched.
-
-    # change all tags to <unknown> except for <foo>
-    $xss->set( 'foo' => { showtag => 1 } );
-    $xss->set( '*' => { rename => 'unknown' } );
-
-=head3 catchall_element()
-
-The attribute getter.
-
-=cut
 
 has 'catchall_element' => (
     is      => 'rw',
@@ -355,38 +140,6 @@ has pi => (
     },
 );
 
-=head2 stash
-
-The stylesheet has a stash (an hashref) that is accessible to all the
-rules during the rendering of a document, and can be used to pass 
-information back and forth.
-
-    $xss->set( section => {  
-        intro => \&section_title,
-    } );
-
-    # turns <section title="blah"> ...
-    # into 1. blah
-    sub section_title {
-        my ( $self, $node, $args ) = @_;
-
-        my $section_nbr = $self->stash->{section_nbr}++;
-
-        return $section_nbr . ". " . $node->findvalue( '@title' );
-    }
-
-By default, the stash is cleared when rendering a document.
-To change this behavior, see L<XML::XSS::Document/use_clean_stash>.
-
-=head3 stash()
-
-The attribute getter.
-
-=head3 clear_stash()
-
-Clear the stash.
-
-=cut
 
 has stash => (
     is      => 'ro',
@@ -397,33 +150,6 @@ has stash => (
 
 sub clear_stash { $_[0]->_set_stash( {} ) }
 
-=head1 METHODS
-
-=head2 set( $name, \%attrs )
-
-Sets attributes for a rendering node. 
-
-The C<$name> can be 
-an XML element name, or one of the special keywords C<#document>,
-C<#text>, C<#comment>, C<#pi> or C<*> (for the
-I<catch-all> element), 
-which will resolve to the corresponding rendering object.
-
-    $xss->set( 'foo' => { rename => 'bar' } );
-    # same as $xss->element('foo')->set( rename => 'bar' );
-
-    $xss->set( '#text' => { filter => { uc shift } } );
-    # same as $xss->text->set( filter => { uc shift } );
-
-Note that subsequent calls to C<set()> are additive. I.e.:
-
-    $xss->set( foo => { pre => 'X' } );
-    $xss->set( foo => { post => 'Y' } );  # pre is still set to 'X'
-
-If you want to delete an attribute, passes it C<undef> as its 
-value.
-
-=cut
 
 sub set {
     my ( $self, $name, $attrs ) = @_;
@@ -458,50 +184,6 @@ sub get {
 
 }
 
-=head2 render( $xml, \%args )
-
-Returns the output produced by the application of the 
-stylesheet to the xml document.  The xml can
-be passed as a string, or as a C<XML::LibXML> object.
-Several C<XML::LibXML> objects can also be passed, in
-which case the return value will be the concatenation
-of their transformations.
-
-    my $sections = $xss->render( $doc->findnodes( 'section' ) );
-
-The C<%args> is optional, and will defaults to an empty
-hash if not provided.  The reference to C<%args> is also passed to
-the recursive calls to C<render()> for the children of the processed
-node, which allows for another way for parent/children nodes to pass
-information in addition to the C<stash>.
-
-    # count the descendents of all nodes
-    $xss->set(
-        '*' => {
-            process => sub {
-                my ( $self, $node, $attrs ) = @_;
-                $attrs->{children}++;
-                return 1;
-            },
-            content => sub {
-                my ( $self, $node, $attrs ) = @_;
-
-                my %c_attrs;
-                my $c_ref = \%c_attrs;
-                my $output = $self->render( $node->childNodes, $c_ref );
-
-                $attrs->{children} += $c_ref->{children};
-
-                $self->{post} =
-                "\n>>> node has " 
-                    . ($c_ref->{children}||0) 
-                    . " descendents\n";
-
-                return $output;
-            },
-        } );
-
-=cut
 
 sub render {
     my $self = shift;
@@ -585,3 +267,326 @@ sub resolve {
 
 
 1;
+
+__END__
+=pod
+
+=head1 NAME
+
+XML::XSS - XML stylesheet system
+
+=head1 VERSION
+
+version 0.1_1
+
+=head1 SYNOPSIS
+
+    use XML::XSS;
+
+    my $xss = XML::XSS->new;
+
+    $xss->set( pod => { 
+        pre => "=pod\n", 
+        post => "=cut\n", 
+    } );
+
+    $xss->set( section => { 
+        pre => \&pre_section 
+    } );
+
+    sub pre_section {
+        my ( $self, $node, $args ) = @_;
+
+        return "=head1 " . $node->findvalue( '@title' ) . "\n\n";
+    }
+
+    print $xss->render( <<'END_XML' );
+    <pod>
+        <section title="NAME">XML::XSS - a XML stylesheet system</section>
+        ...
+    </pod>
+    END_XML
+
+=head1 DESCRIPTION
+
+Caution: this is alpha-quality software. Here be enough dragons to send 
+Beowulf packing. Caveat maximus emptor.
+
+C<XML::XSS> is a XML stylesheet system loosely similar to 
+CSS and XSLT.  A C<XML::XSS> object is made up of 
+rendering rules that dictate how the different nodes of
+an XML document are to be rendered, and can be applied 
+against one or many XML documents. 
+
+C<XML::XSS> is a rewrite of L<XML::XPathScript>, which was
+initially part of the L<AxKit> framework.
+
+=head2 The XML Document
+
+C<XML::XSS> uses L<XML::LibXML> under the hood as its XML DOM
+API.  Documents can be passed as strings, in which case the creation
+of the XML::LibXML object will be done behind the curtain
+
+    $xss->render( '<foo>yadah</foo>' );
+
+or the L<XML::LibXML> object can be passed directly
+
+    my $doc = XML::LibXML->load_xml( location => 'foo.xml' );
+    $xss->render( $doc );
+
+=head2 Stylesheet Rules
+
+C<XML::XSS> has 5 different kinds of rules that reflect the
+different kinds of nodes that a XML document can have (as per
+L<XML::LibXML>): L<XML::XSS::Document>, L<XML::XSS::Text>,
+L<XML::XSS::Comment>, L<XML::XSS::ProcessingInstruction> and
+L<XML::XSS::Element>. Whereas there are can many C<XML::LibXML::Element>
+rules, there is only one instance of each of the first 4 rules per
+stylesheet. In addition of the regular C<XML::LibXML::Element> rules, 
+a special I<catch-all> C<XML::LibXML::Element> also exists that will
+be applied to any document element not explicitly matched by one of the 
+element rules.
+
+=head2 Rules Style Attributes
+
+Each rule has a set of style attributes that control how the matching
+document node is transformed.  The different types of rule
+(L<XML::XSS::Document>, L<XML::XSS::Element>,
+L<XML::XSS::Text>, L<XML::XSS::Comment> and L<XML::XSS::ProcessingInstruction>) 
+have each a different set of style attributes, which are
+described in their relative manpages.
+
+Unless specified otherwise, a style attribute can be assigned a
+scalar value or a reference to a sub.  In the second case, the sub will
+be evaluated in the context of the processed node and its return value will
+be used as the style attribute value.
+
+Upon execution, the sub references will be passed three parameters: 
+the invoking rule, the C<XML::LibXML> node it is rendering and the arguments 
+ref given to C<render()>. 
+
+    $css->set( 'foo' => {
+        pre => '[[[',         
+        post => sub {        
+            my ( $self, $node, $args ) = @_;
+            return $node->findvalue( '@bar' );
+        }
+    } );
+
+=head2 Modifying Rules While Rendering
+
+Rules attributes changed while rendering only apply to 
+the current element.
+
+    $xss->set( 'section' => { 
+        process => sub {
+            my ( $self, $node ) = @_;
+            $self->stash->{section_nbr}++;
+            if ( $self->stash->{section_nbr} == 5 ) {
+                # only applies to the one section
+                $self->set_pre( '>>> this is the fifth section <<<' ); 
+            }
+            return 1;
+        }
+    } );
+
+If you want to change the global rule, you have to access the rule
+from the stylesheet, like so
+
+    $xss->set( 'section' => { 
+        process => sub {
+            my ( $self, $node ) = @_;
+            $self->stash->{section_nbr}++;
+            if ( $self->stash->{section_nbr} == 6 ) {
+                $self->stylesheet->element('section')->set_pre( 
+                    '>>> this is after the fifth section <<<' 
+                ); 
+            }
+            return 1;
+        }
+    } );
+
+=head1 ATTRIBUTES
+
+=head2 document 
+
+The document rule. Note that this matches against the
+C<XML::LibXML::Document> node, not the root element node of
+the document.
+
+=head3 document()
+
+Attribute getter.
+
+=head2 text 
+
+The text rule.
+
+=head3 text()
+
+Attribute getter.
+
+=head3 set_text( ... )
+
+Shortcut for
+
+    $xss->text->set( ... );
+
+=head3 clear_text()
+
+Shortcut for
+
+    $xss->text->clear;
+
+=head2 comment
+
+The comment rule.
+
+=head3 comment()
+
+Attribute getter.
+
+=head3 set_comment( ... )
+
+Shortcut for 
+
+    $xss->comment->set( ... )
+
+=head2 elements
+
+The collection of user-defined element rules. 
+
+=head3 element( $name )
+
+Returns the L<XML::XSS::Element> node associated to the tag C<$name>.
+If the element didn't already exist, it is automatically created.
+
+    my $elt = $xss->element( 'foo' );  # element for <foo>
+    $elt->set( pre => '[foo]' );
+
+=head2 catchall_element
+
+The catch-all element rule, which is applied to
+all the element nodes that aren't explicitly matched.
+
+    # change all tags to <unknown> except for <foo>
+    $xss->set( 'foo' => { showtag => 1 } );
+    $xss->set( '*' => { rename => 'unknown' } );
+
+=head3 catchall_element()
+
+The attribute getter.
+
+=head2 stash
+
+The stylesheet has a stash (an hashref) that is accessible to all the
+rules during the rendering of a document, and can be used to pass 
+information back and forth.
+
+    $xss->set( section => {  
+        intro => \&section_title,
+    } );
+
+    # turns <section title="blah"> ...
+    # into 1. blah
+    sub section_title {
+        my ( $self, $node, $args ) = @_;
+
+        my $section_nbr = $self->stash->{section_nbr}++;
+
+        return $section_nbr . ". " . $node->findvalue( '@title' );
+    }
+
+By default, the stash is cleared when rendering a document.
+To change this behavior, see L<XML::XSS::Document/use_clean_stash>.
+
+=head3 stash()
+
+The attribute getter.
+
+=head3 clear_stash()
+
+Clear the stash.
+
+=head1 METHODS
+
+=head2 set( $name, \%attrs )
+
+Sets attributes for a rendering node. 
+
+The C<$name> can be 
+an XML element name, or one of the special keywords C<#document>,
+C<#text>, C<#comment>, C<#pi> or C<*> (for the
+I<catch-all> element), 
+which will resolve to the corresponding rendering object.
+
+    $xss->set( 'foo' => { rename => 'bar' } );
+    # same as $xss->element('foo')->set( rename => 'bar' );
+
+    $xss->set( '#text' => { filter => { uc shift } } );
+    # same as $xss->text->set( filter => { uc shift } );
+
+Note that subsequent calls to C<set()> are additive. I.e.:
+
+    $xss->set( foo => { pre => 'X' } );
+    $xss->set( foo => { post => 'Y' } );  # pre is still set to 'X'
+
+If you want to delete an attribute, passes it C<undef> as its 
+value.
+
+=head2 render( $xml, \%args )
+
+Returns the output produced by the application of the 
+stylesheet to the xml document.  The xml can
+be passed as a string, or as a C<XML::LibXML> object.
+Several C<XML::LibXML> objects can also be passed, in
+which case the return value will be the concatenation
+of their transformations.
+
+    my $sections = $xss->render( $doc->findnodes( 'section' ) );
+
+The C<%args> is optional, and will defaults to an empty
+hash if not provided.  The reference to C<%args> is also passed to
+the recursive calls to C<render()> for the children of the processed
+node, which allows for another way for parent/children nodes to pass
+information in addition to the C<stash>.
+
+    # count the descendents of all nodes
+    $xss->set(
+        '*' => {
+            process => sub {
+                my ( $self, $node, $attrs ) = @_;
+                $attrs->{children}++;
+                return 1;
+            },
+            content => sub {
+                my ( $self, $node, $attrs ) = @_;
+
+                my %c_attrs;
+                my $c_ref = \%c_attrs;
+                my $output = $self->render( $node->childNodes, $c_ref );
+
+                $attrs->{children} += $c_ref->{children};
+
+                $self->{post} =
+                "\n>>> node has " 
+                    . ($c_ref->{children}||0) 
+                    . " descendents\n";
+
+                return $output;
+            },
+        } );
+
+=head1 AUTHOR
+
+  Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2010 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut
+

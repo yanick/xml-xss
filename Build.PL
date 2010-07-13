@@ -16,7 +16,7 @@ my %module_build_args = (
   'configure_requires' => {
     'Module::Build' => '0.3601'
   },
-  'dist_abstract' => 'XML Stylesheet System',
+  'dist_abstract' => 'XML stylesheet system',
   'dist_author' => [
     'Yanick Champoux <yanick@cpan.org>'
   ],
