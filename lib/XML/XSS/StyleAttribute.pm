@@ -1,4 +1,5 @@
 package XML::XSS::StyleAttribute;
+# ABSTRACT: style attribute for XML::XSS stylesheet rule
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;

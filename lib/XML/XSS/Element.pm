@@ -1,8 +1,5 @@
 package XML::XSS::Element;
-
-=head1 NAME 
-
-XML::XSS::Element - XML::XSS element stylesheet rule
+# ABSTRACT: XML::XSS element stylesheet rule
 
 =head1 SYNOPSIS
 

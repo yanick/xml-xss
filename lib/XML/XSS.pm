@@ -1,8 +1,5 @@
 package XML::XSS;
-
-=head1 NAME
-
-XML::XSS - XML Stylesheet System
+# ABSTRACT: XML stylesheet system
 
 =head1 SYNOPSIS
 

@@ -1,4 +1,5 @@
 package XML::XSS::ProcessingInstruction;
+# ABSTRACT: XML::XSS processing instruction stylesheet rule
 
 use 5.10.0;
 

@@ -1,8 +1,5 @@
 package XML::XSS::Text;
-
-=head1 NAME 
-
-XML::XSS::Text - XML::XSS text stylesheet rule
+# ABSTRACT: XML::XSS text stylesheet rule
 
 =head1 SYNOPSIS
 

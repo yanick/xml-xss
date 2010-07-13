@@ -6,7 +6,6 @@ META.json
 META.yml
 SIGNATURE
 lib/XML/XSS.pm
-lib/XML/XSS.text
 lib/XML/XSS/Comment.pm
 lib/XML/XSS/Document.pm
 lib/XML/XSS/Element.pm

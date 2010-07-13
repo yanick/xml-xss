@@ -1,4 +1,5 @@
 package XML::XSS::Role::Renderer;
+# ABSTRACT: XML::XSS role for rendering rule
 
 #use MooseX::SemiAffordanceAccessor;
 use Moose::Role;

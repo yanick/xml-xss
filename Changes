@@ -3,7 +3,8 @@ Revision history for XML::XSS
 {{$NEXT}}
 
 0.1_1     2010-07-11 22:12:25 America/Montreal
-    * Add a Changes file.
+    * add a Changes file.
+    * add Pod::Weaver in dist::zilla config.
 
 0.1_0     2010-07-11 America/Montreal
     * Original release.

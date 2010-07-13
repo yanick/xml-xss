@@ -1,8 +1,5 @@
 package XML::XSS::Comment;
-
-=head1 NAME 
-
-XML::XSS::Comment - XML::XSS comment stylesheet rule
+# ABSTRACT: XML::XSS comment stylesheet rule
 
 =head1 SYNOPSIS
 

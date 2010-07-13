@@ -1,4 +1,5 @@
 package XML::XSS::Role::StyleAttribute;
+# ABSTRACT: Trait of style attributes
 
 use Moose::Role;
 use XML::XSS::StyleAttribute;

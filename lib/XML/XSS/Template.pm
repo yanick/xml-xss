@@ -1,4 +1,5 @@
 package XML::XSS::Template;
+# ABSTRACT: XML::XSS templates
 
 use 5.10.0;
 
