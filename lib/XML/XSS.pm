@@ -1,6 +1,6 @@
 package XML::XSS;
 BEGIN {
-  $XML::XSS::VERSION = '0.1_1';
+  $XML::XSS::VERSION = '0.1_2';
 }
 # ABSTRACT: XML stylesheet system
 
@@ -277,7 +277,7 @@ XML::XSS - XML stylesheet system
 
 =head1 VERSION
 
-version 0.1_1
+version 0.1_2
 
 =head1 SYNOPSIS
 

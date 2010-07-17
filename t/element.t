@@ -12,7 +12,7 @@ $xss->set( 'foo' => {
        post => 'POST',
 } );
 
-is $xss->element( 'foo' )->pre => 'PRE', 'element PRE';
+is $xss->element( 'foo' )->pre->value => 'PRE', 'element PRE';
 
 is $xss->render( '<doc><foo>bar</foo></doc>' ) 
     =>  "<doc>PREbarPOST</doc>" ;

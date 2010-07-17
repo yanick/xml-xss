@@ -1,6 +1,6 @@
 package XML::XSS::Template;
 BEGIN {
-  $XML::XSS::Template::VERSION = '0.1_1';
+  $XML::XSS::Template::VERSION = '0.1_2';
 }
 # ABSTRACT: XML::XSS templates
 
@@ -177,7 +177,7 @@ XML::XSS::Template - XML::XSS templates
 
 =head1 VERSION
 
-version 0.1_1
+version 0.1_2
 
 =head1 AUTHOR
 

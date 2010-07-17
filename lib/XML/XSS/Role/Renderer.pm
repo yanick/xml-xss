@@ -1,6 +1,6 @@
 package XML::XSS::Role::Renderer;
 BEGIN {
-  $XML::XSS::Role::Renderer::VERSION = '0.1_1';
+  $XML::XSS::Role::Renderer::VERSION = '0.1_2';
 }
 # ABSTRACT: XML::XSS role for rendering rule
 
@@ -116,7 +116,7 @@ XML::XSS::Role::Renderer - XML::XSS role for rendering rule
 
 =head1 VERSION
 
-version 0.1_1
+version 0.1_2
 
 =head1 AUTHOR
 

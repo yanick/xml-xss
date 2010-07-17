@@ -101,7 +101,7 @@ sub set_foo : Tests {
             showtag => 1,
         } );
 
-    is $xss->element('foo')->pre => 'PRE', 'element PRE';
+    is $xss->element('foo')->pre->value => 'PRE', 'element PRE';
 
     $self->render_ok("<doc>PRE<foo>bar</foo>POST</doc>");
 
@@ -112,7 +112,7 @@ sub show_tag :Tests {
 
     my $elt = $self->{foo};
 
-    is $elt->showtag => undef, 'default is undef';
+    is $elt->showtag->value => undef, 'default is undef';
 
     $elt->set_showtag(0);
 

@@ -1,6 +1,6 @@
 package XML::XSS::Comment;
 BEGIN {
-  $XML::XSS::Comment::VERSION = '0.1_1';
+  $XML::XSS::Comment::VERSION = '0.1_2';
 }
 # ABSTRACT: XML::XSS comment stylesheet rule
 
@@ -71,7 +71,7 @@ XML::XSS::Comment - XML::XSS comment stylesheet rule
 
 =head1 VERSION
 
-version 0.1_1
+version 0.1_2
 
 =head1 SYNOPSIS
 

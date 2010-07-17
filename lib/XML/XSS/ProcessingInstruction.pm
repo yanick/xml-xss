@@ -1,6 +1,6 @@
 package XML::XSS::ProcessingInstruction;
 BEGIN {
-  $XML::XSS::ProcessingInstruction::VERSION = '0.1_1';
+  $XML::XSS::ProcessingInstruction::VERSION = '0.1_2';
 }
 # ABSTRACT: XML::XSS processing instruction stylesheet rule
 
@@ -45,7 +45,7 @@ XML::XSS::ProcessingInstruction - XML::XSS processing instruction stylesheet rul
 
 =head1 VERSION
 
-version 0.1_1
+version 0.1_2
 
 =head1 AUTHOR
 
