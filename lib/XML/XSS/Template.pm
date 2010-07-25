@@ -1,29 +1,217 @@
 package XML::XSS::Template;
+
 # ABSTRACT: XML::XSS templates
+
+=head1 SYNOPSIS
+
+    use XML::XSS;
+
+    my $xss = XML::XSS->new;
+
+    $xss.'chapter'.'content' *= xsst q{
+        <%~ title %>
+        <%~ para %>
+        <%~ note %>
+    };
+
+=head1 DESCRIPTION
+
+XML::XSS::Template provides a templating markup language to ease the
+writing of rules for XML::XSS stylesheet rules. So that the style
+
+    $xss.'chapter'.'content' *= sub {
+        my ( $r, $node, $args ) = @_;
+        my $output;
+
+        $output .= $r->render( $node->findnodes( 'title' ) );
+
+        $output .= $r->render( $node->findnodes( 'para' ) );
+
+        if ( my @notes = $node->findnodes('note') ) {
+            $output .= '<div class="notes">'
+                    .  $r->render( @notes )
+                    .  '</div>';
+        }
+
+        return $output;
+    };
+
+can be written
+
+    $xss.'chapter'.'content' *= xsst q{
+        <%~ title %>
+        <%~ para %>
+
+        <% if ( my  @notes = $node->findnodes('note') ) { %>
+            <div class="notes">
+                <%= $r->render( @notes ) %>
+            </div>
+        <% } %>
+    };
+
+
+=head1 TEMPLATE SYNTAX
+
+The template directives are surrounded by '<%', '%>' delimiters.
+An optional dash can be squeezed in ('<-%', '%->'), which will
+cause all preceding or following whitespaces (including carriage returns) 
+to be squished from the rendered document. 
+This is useful to keep a stylesheet readable without
+generating transformed document with many whitespace gaps. The dash can be 
+added independently to the right and left delimiter.
+
+For example
+
+    <h1>
+        <-%@ /doc/title %->
+    </h1>
+
+will be rendered as
+
+    <h1>A Tale of Two Cities</h1>
+
+As an empty directive is an no-op, one can 
+take advantage of it and use '<-%%->' as
+a magic template compacter.
+
+=head2 Template Directives
+
+=head3 <%  %>
+
+Evaluates the code enclosed without printing anything.
+
+Example:
+
+    <% my $now = localtime %>
+
+To make the directive output something, simply C<print> it.
+
+    <% print "oooh, shiny" if $thingy->albedo_index > 50  %>
+
+To create a loop in your template, use two directives to wrap the opening and
+closing pieces of code:
+
+    <% for my $item ( @shopping_list ) { %>
+        <p>I need a <%= $item %>.</p>
+    <% } %>
+
+=head3 <%= %>
+
+Evaluates the enclosed code and prints its result. 
+
+    Author: <%= 'Hi ' + $name %>
+
+=head3 <%# %>
+
+Comments out the enclosed text, which will neither be executed or
+show in the rendered document.
+
+=head3 <%~ $xpath %>
+
+Takes the XPath expression, applies it on the current
+node and renders the resulting nodes. Equivalent of doing
+
+    <%= $r->render( $node->findnodes( $xpath ), $args ) %>
+
+Example:
+
+    $xss->set( chapter => { content => <<'END_CONTENT' } );
+        <%~ title %>   <%# process the title node %>
+        <%~ para %>    <%# ... and then the paragraphs %>
+        <%~ note %>    <%# ... and the notes %>
+    END_CONTENT
+
+
+=head3 <%@ $xpath %>
+
+Takes the XPath expression and prints its value.  Equivalent of doing
+
+    <%= $node->findvalue( $xpath ) %>
+=cut
 
 use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 
-use overload 
-    '&{}' => sub { $_[0]->compiled },
-    'bool' => sub { length $_[0]->code };
+use overload
+  '&{}'  => sub { $_[0]->compiled },
+  'bool' => sub { length $_[0]->code };
 
 no warnings qw/ uninitialized /;
 
 our @sigils = qw/ = ~ @ /;
 
+=head1 EXPORTED FUNCTIONS
+
+=head2 xsst( $template )
+
+Takes the template given as a string and convert it as a 
+C<XML::XSS::Template> object ready to be used by a style attribute 
+of the stylesheet.
+
+    my $template = xsst q{
+        <div>
+            <h2>List of stuff</h2>
+            <%~ item %>
+        </div>
+    };
+
+    $xss->set( list => { content => $template } );
+
+From the point of view of the stylesheet, the template object created by
+C<xsst> is just another coderef, and will be passed the usual rendering node,
+xml node and option hashref arguments. For convenience, those are already
+made available as C<$r>, C<$node> and C<$args>.
+
+    my $template = xstt q{
+        <h2><%= $r->stylesheet->stash->{section_nbr}++ %>. <%~ title %></h2>
+        <% for my $child ( $node->childNodes ) { %>
+            do something...
+        <% } %>
+    };
+
+=cut
+
 Moose::Exporter->setup_import_methods( as_is => ['xsst'], );
 
+sub xsst($) {
+    my $template = shift;
+
+    my ( undef, $filename, $line ) = caller;
+
+    return XML::XSS::Template->new(
+        _filename => $filename,
+        _line     => $line,
+        template  => $template,
+    );
+}
+
+=head1 ATTRIBUTES
+
+=head2 template
+
+The original template string.
+
+=cut
+
 has template => ( isa => 'Str', is => 'rw', required => 1 );
+
+=head2 code
+
+The code generated out of the original template, as a string.
+
+    my $template = xsst q{ Hello <%= $r->stylesheet->stash->{name} %> };
+    print $template->code;
+
+=cut
 
 has code => ( isa => 'Str', is => 'rw' );
 
 has compiled => ( is => 'rw' );
 
 has _filename => ( is => 'rw' );
-has _line => ( is => 'rw' );
+has _line     => ( is => 'rw' );
 
 sub BUILD {
     my $self = shift;
@@ -41,25 +229,11 @@ return \$output;
 }
 END_SUB
 
-    $self->set_code( $sub );
+    $self->set_code($sub);
 
     $self->set_compiled( eval $sub );
     die $@ if $@;
 
-}
-
-
-
-sub xsst($) {
-    my $template = shift;
-
-    my ( undef, $filename, $line) = caller;
-
-    return XML::XSS::Template->new(
-        _filename => $filename,
-        _line => $line,
-        template => $template,
-    );
 }
 
 sub _parse_template {
@@ -82,6 +256,7 @@ sub _parse_template {
             $self->_parse_block( $token, \@tokens, \@parsed );
         }
         else {
+
             # it's a verbatim block
             my ( $f, $l ) = ( $self->_filename, $self->_line );
             $self->_set_line( $l + $token =~ y/\n// );
@@ -93,11 +268,11 @@ sub _parse_template {
     }
 
     my $code;
-    my ($pf, $pl);
+    my ( $pf, $pl );
     for my $block (@parsed) {
-        $code .= join( ' ', "\n#line ", $block->[4], $block->[3] ) . "\n" 
-           unless $block->[4] == $pl and $block->[3] eq $pf;
-        ( $pf, $pl ) = ($block->[3], $block->[4] );
+        $code .= join( ' ', "\n#line ", $block->[4], $block->[3] ) . "\n"
+          unless $block->[4] == $pl and $block->[3] eq $pf;
+        ( $pf, $pl ) = ( $block->[3], $block->[4] );
         if ( $block->[0] and length $block->[1] ) {
             $block->[1] =~ s/\|/\\\|/g;
             $block->[1] = 'print(q|' . $block->[1] . '|);';
@@ -115,52 +290,54 @@ sub _parse_block {
 
     my ( $token, $tokens, $parsed ) = @_;
 
-        my $code;
-        my $closing_tag;
-        my $level = 1;
-        while( @$tokens ) {
-            my $t = shift @$tokens;
-            $level++ if $t =~ /\A<-?%/;
-            $level-- if $t =~ /\A%-?>/;
-            if ( $level == 0 ) {
-                $closing_tag = $t;
-                last;
-            }
-            $code .= $t;
+    my $code;
+    my $closing_tag;
+    my $level = 1;
+    while (@$tokens) {
+        my $t = shift @$tokens;
+        $level++ if $t =~ /\A<-?%/;
+        $level-- if $t =~ /\A%-?>/;
+        if ( $level == 0 ) {
+            $closing_tag = $t;
+            last;
         }
+        $code .= $t;
+    }
 
-        my ( $f, $l ) = ( $self->_filename, $self->_line );
+    my ( $f, $l ) = ( $self->_filename, $self->_line );
 
-        $self->_set_line( $l + $code =~ y/\n// );
+    $self->_set_line( $l + $code =~ y/\n// );
 
-        die "stylesheet <% %>s are unbalanced: <%$token $code\n"
-            unless $closing_tag;
+    die "stylesheet <% %>s are unbalanced: <%$token $code\n"
+      unless $closing_tag;
 
-       given ( $token ) {
-           when ( '=' ) {
-               $code = 'print(' . $code .');';
-           }
-           when ( '~' ) {
-               $code =~ s/\A\s+|\s+Z//g;  # trim
-               $code =~ s/'/\\'/g;
-               $code = qq{eval { print \$r->render(\$node->findnodes('$code'), \$args) } or warn $@;};
+    given ($token) {
+        when ('=') {
+            $code = 'print(' . $code . ');';
+        }
+        when ('~') {
+            $code =~ s/\A\s+|\s+Z//g;    # trim
+            $code =~ s/'/\\'/g;
+            $code =
+              qq{eval { print \$r->render(\$node->findnodes('$code'), \$args) } or warn $@;};
 
-           }
-           when( '@' ) {
-               $code =~ s/\A\s+|\s+Z//g;  # trim
-               $code =~ s/'/\\'/g;
-               $code = qq{eval { print \$node->findvalue('$code') } or warn $@;};
-           }
-           default {
-                # add a semi-colon if there is none
-                $code .= ';' unless $code =~ /;\s*\Z/;
-           }
-       }
+        }
+        when ('@') {
+            $code =~ s/\A\s+|\s+Z//g;    # trim
+            $code =~ s/'/\\'/g;
+            $code = qq{eval { print \$node->findvalue('$code') } or warn $@;};
+        }
+        default {
 
+            # add a semi-colon if there is none
+            $code .= ';' unless $code =~ /;\s*\Z/;
+        }
+    }
 
-
-       push @$parsed, [ 0, $code, !!($closing_tag =~ /-/), $f, $l ];
+    push @$parsed, [ 0, $code, !!( $closing_tag =~ /-/ ), $f, $l ];
 }
 
-
 1;
+
+__END__
+
