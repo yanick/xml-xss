@@ -68,6 +68,15 @@ sub overload_basic :Tests {
     };
 
     $self->render_ok( '<doc>AZ</doc>' );
+
+    my $node = $xss.'foo';
+    $node %= {
+        pre =>  'B',
+        post => 'Y',
+        content => undef,
+    };
+
+    $self->render_ok( '<doc>BY</doc>' );
 }
 
 

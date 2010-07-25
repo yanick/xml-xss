@@ -178,15 +178,6 @@ has log_dispatch_conf => (
 
 has log_level => ( is => 'rw', default => 'info' );
 
-use overload
-    '.' => '_concat_overload',
-    '""' => sub { return ref shift };
-
-sub _concat_overload {
-    my ( $self, $elt ) = @_;
-    return $self->get($elt);
-}
-
 =head1 ATTRIBUTES
 
 =head2 document 
@@ -386,6 +377,30 @@ has stash => (
 );
 
 sub clear_stash { $_[0]->_set_stash( {} ) }
+
+=head1 OVERLOADING
+
+=head2 Concatenation (.)
+
+The concatenation operator is overloaded to behave as an alias for C<get()>.
+
+    my $chapter = $xss.'chapter';           # just like $xss->get('chapter')
+
+    $chapter->set_pre( '<div class="chapter">' );
+    $chapter->set_post( '</div>' );
+
+Gets really powerful when used in concert with the overloading of the rules
+and style attributes:
+
+    # equivalent as example above
+    $xss.'chapter'.'pre'  *= '<div class="chapter">';
+    $xss.'chapter'.'post' *= '</div>';
+
+=cut
+
+use overload
+    '.' => sub { $_[0]->get($_[1]) },
+    '""' => sub { return ref shift };
 
 =head1 METHODS
 

@@ -52,6 +52,59 @@ sub _render {
     return $self->$attr->render( $self, $node, $args );
 }
 
+=head1 OVERLOADING
+
+=head2 Concatenation (.)
+
+Shortcut to get the style attributes.
+
+    my $pre = $xss.'chapter'.'pre';
+
+is equivalent to 
+
+    my $pre = $xss->get('chapter')->pre;
+
+In addition of the usual style attributes, the special keyword 'style' can
+also be used, which returns the object itself. Which is useful to use the 
+other overloaded operators, which don't work without it. :-(
+
+    # will work
+    $xss.'chapter'.'style' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+    # will work too
+    my $chapter = $xss.'chapter';
+    $chapter %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+    # won't work!
+    $xss.'chapter' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+=head2 %=
+
+Assigns a set of style attributes.
+
+    $xss.'chapter'.'style' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+is equivalent to
+
+    $xss->set( chapter => {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    } );
+
+=cut
+
 # http://use.perl.org/~tokuhirom/journal/36582
 __PACKAGE__->meta->add_package_symbol( '&()' => sub { } );    # dummy
 __PACKAGE__->meta->add_package_symbol( '&(""' => sub { shift->stringify } );
@@ -60,7 +113,7 @@ __PACKAGE__->meta->add_package_symbol( '&(.' => sub { shift->_concat_overload(sh
 __PACKAGE__->meta->add_package_symbol( '&(bool' => sub { 1 } );
 __PACKAGE__->meta->add_package_symbol( '&(eq' => sub { shift->_equal_overload(shift) } );
 __PACKAGE__->meta->add_package_symbol( '&(==' => sub { shift->_equal_overload(shift) } );
-__PACKAGE__->meta->add_package_symbol( '&(<<=' => sub { shift->_assign_content(shift) } );
+#__PACKAGE__->meta->add_package_symbol( '&(<<=' => sub { shift->_assign_content(shift) } );
 __PACKAGE__->meta->add_package_symbol( '&(=' => sub { shift } );
 
 
