@@ -153,30 +153,9 @@ use XML::XSS::Template;
 
 no warnings qw/ uninitialized /;
 
-with qw/ MooseX::LogDispatch::Levels 
-/;
-
 Moose::Exporter->setup_import_methods(
     as_is => ['xsst'],
 );
-
-
-has log_dispatch_conf => (
-    is       => 'ro',
-    isa      => 'HashRef',
-    lazy     => 1,
-    required => 1,
-    default  => sub {
-        my $self = shift;
-        {   class     => 'Log::Dispatch::Screen',
-            min_level => $self->log_level,
-            stderr    => 1,
-            format    => '[%p] %m at %F line %L%n',
-        };
-    },
-);
-
-has log_level => ( is => 'rw', default => 'info' );
 
 =head1 ATTRIBUTES
 

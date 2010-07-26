@@ -104,8 +104,6 @@ sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
 
-    $self->debug( "rendering text $node" );
-
     my $text = $node->data;
 
     my $output;

@@ -184,8 +184,6 @@ sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
 
-    $self->debug("rendering element $node");
-
     return
       if $self->has_process and !$self->_render( 'process', $node, $args );
 
