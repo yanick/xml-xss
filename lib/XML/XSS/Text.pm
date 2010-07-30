@@ -1,6 +1,6 @@
 package XML::XSS::Text;
 BEGIN {
-  $XML::XSS::Text::VERSION = '0.1_2';
+  $XML::XSS::Text::VERSION = '0.1.3';
 }
 # ABSTRACT: XML::XSS text stylesheet rule
 
@@ -44,8 +44,6 @@ sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
 
-    $self->debug( "rendering text $node" );
-
     my $text = $node->data;
 
     my $output;
@@ -78,7 +76,7 @@ XML::XSS::Text - XML::XSS text stylesheet rule
 
 =head1 VERSION
 
-version 0.1_2
+version 0.1.3
 
 =head1 SYNOPSIS
 

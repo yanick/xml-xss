@@ -1,6 +1,6 @@
 package XML::XSS::Element;
 BEGIN {
-  $XML::XSS::Element::VERSION = '0.1_2';
+  $XML::XSS::Element::VERSION = '0.1.3';
 }
 # ABSTRACT: XML::XSS element stylesheet rule
 
@@ -33,8 +33,6 @@ before "set_$_" => sub {
 sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
-
-    $self->debug("rendering element $node");
 
     return
       if $self->has_process and !$self->_render( 'process', $node, $args );
@@ -97,7 +95,7 @@ XML::XSS::Element - XML::XSS element stylesheet rule
 
 =head1 VERSION
 
-version 0.1_2
+version 0.1.3
 
 =head1 SYNOPSIS
 

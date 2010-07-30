@@ -21,7 +21,7 @@ my %module_build_args = (
     'Yanick Champoux <yanick@cpan.org>'
   ],
   'dist_name' => 'XML-XSS',
-  'dist_version' => '0.1_2',
+  'dist_version' => '0.1.3',
   'license' => 'perl',
   'module_name' => 'XML::XSS',
   'recommends' => {},
@@ -33,7 +33,6 @@ my %module_build_args = (
     'MooseX::AttributeHelpers' => '0',
     'MooseX::ClassAttribute' => '0',
     'MooseX::Clone' => '0',
-    'MooseX::LogDispatch::Levels' => '0',
     'MooseX::SemiAffordanceAccessor' => '0',
     'Scalar::Util' => '0',
     'XML::LibXML' => '0',

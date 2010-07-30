@@ -32,7 +32,6 @@
             "MooseX::AttributeHelpers" : 0,
             "MooseX::ClassAttribute" : 0,
             "MooseX::Clone" : 0,
-            "MooseX::LogDispatch::Levels" : 0,
             "MooseX::SemiAffordanceAccessor" : 0,
             "Scalar::Util" : 0,
             "XML::LibXML" : 0,
@@ -49,7 +48,7 @@
          }
       }
    },
-   "release_status" : "testing",
+   "release_status" : "stable",
    "resources" : {
       "bugtracker" : {
          "mailto" : "bug-xml-xss at rt.cpan.org",
@@ -62,6 +61,6 @@
          "web" : "http://github.com/yanick/xml-xss/tree"
       }
    },
-   "version" : "0.1_2"
+   "version" : "0.1.3"
 }
 

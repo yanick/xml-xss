@@ -1,6 +1,6 @@
 package XML::XSS::Document;
 BEGIN {
-  $XML::XSS::Document::VERSION = '0.1_2';
+  $XML::XSS::Document::VERSION = '0.1.3';
 }
 # ABSTRACT: XML::XSS document stylesheet rule
 
@@ -27,8 +27,6 @@ sub apply {
 
     $self->stylesheet->clear_stash if $self->use_clean_stash;
 
-    $self->debug( "rendering document $node" );
-
     my $output =  $self->_render( 'pre', $node, $args );
     $output .= $self->render( $node->childNodes, $args );
     $output .= $self->_render( 'post', $node, $args );
@@ -48,7 +46,7 @@ XML::XSS::Document - XML::XSS document stylesheet rule
 
 =head1 VERSION
 
-version 0.1_2
+version 0.1.3
 
 =head1 SYNOPSIS
 

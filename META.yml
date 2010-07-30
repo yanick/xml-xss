@@ -24,7 +24,6 @@ requires:
   MooseX::AttributeHelpers: 0
   MooseX::ClassAttribute: 0
   MooseX::Clone: 0
-  MooseX::LogDispatch::Levels: 0
   MooseX::SemiAffordanceAccessor: 0
   Scalar::Util: 0
   XML::LibXML: 0
@@ -34,4 +33,4 @@ resources:
   bugtracker: http://rt.cpan.org/Public/Dist/Display.html?Name=XML-XSS
   homepage: http://search.cpan.org/dist/XML-XSS/
   repository: git://github.com/yanick/xml-xss.git
-version: 0.1_2
+version: 0.1.3

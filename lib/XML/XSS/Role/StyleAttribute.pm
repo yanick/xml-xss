@@ -1,6 +1,6 @@
 package XML::XSS::Role::StyleAttribute;
 BEGIN {
-  $XML::XSS::Role::StyleAttribute::VERSION = '0.1_2';
+  $XML::XSS::Role::StyleAttribute::VERSION = '0.1.3';
 }
 # ABSTRACT: Trait of style attributes
 
@@ -35,7 +35,7 @@ XML::XSS::Role::StyleAttribute - Trait of style attributes
 
 =head1 VERSION
 
-version 0.1_2
+version 0.1.3
 
 =head1 AUTHOR
 

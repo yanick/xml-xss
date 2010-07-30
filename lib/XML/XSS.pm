@@ -1,6 +1,6 @@
 package XML::XSS;
 BEGIN {
-  $XML::XSS::VERSION = '0.1_2';
+  $XML::XSS::VERSION = '0.1.3';
 }
 # ABSTRACT: XML stylesheet system
 
@@ -25,39 +25,9 @@ use XML::XSS::Template;
 
 no warnings qw/ uninitialized /;
 
-with qw/ MooseX::LogDispatch::Levels 
-/;
-
 Moose::Exporter->setup_import_methods(
     as_is => ['xsst'],
 );
-
-
-has log_dispatch_conf => (
-    is       => 'ro',
-    isa      => 'HashRef',
-    lazy     => 1,
-    required => 1,
-    default  => sub {
-        my $self = shift;
-        {   class     => 'Log::Dispatch::Screen',
-            min_level => $self->log_level,
-            stderr    => 1,
-            format    => '[%p] %m at %F line %L%n',
-        };
-    },
-);
-
-has log_level => ( is => 'rw', default => 'info' );
-
-use overload
-    '.' => '_concat_overload',
-    '""' => sub { return ref shift };
-
-sub _concat_overload {
-    my ( $self, $elt ) = @_;
-    return $self->get($elt);
-}
 
 
 has document => (
@@ -149,6 +119,11 @@ has stash => (
 );
 
 sub clear_stash { $_[0]->_set_stash( {} ) }
+
+
+use overload
+    '.' => sub { $_[0]->get($_[1]) },
+    '""' => sub { return ref shift };
 
 
 sub set {
@@ -277,7 +252,7 @@ XML::XSS - XML stylesheet system
 
 =head1 VERSION
 
-version 0.1_2
+version 0.1.3
 
 =head1 SYNOPSIS
 
@@ -507,6 +482,24 @@ The attribute getter.
 =head3 clear_stash()
 
 Clear the stash.
+
+=head1 OVERLOADING
+
+=head2 Concatenation (.)
+
+The concatenation operator is overloaded to behave as an alias for C<get()>.
+
+    my $chapter = $xss.'chapter';           # just like $xss->get('chapter')
+
+    $chapter->set_pre( '<div class="chapter">' );
+    $chapter->set_post( '</div>' );
+
+Gets really powerful when used in concert with the overloading of the rules
+and style attributes:
+
+    # equivalent as example above
+    $xss.'chapter'.'pre'  *= '<div class="chapter">';
+    $xss.'chapter'.'post' *= '</div>';
 
 =head1 METHODS
 
