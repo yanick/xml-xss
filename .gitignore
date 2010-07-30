@@ -3,3 +3,4 @@ lib/XML/XPathScript2/Stylesheet
 \.prove
 XML-XSS*
 blog2
+.build
