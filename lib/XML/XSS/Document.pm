@@ -26,8 +26,9 @@ and not the document root element.
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
@@ -51,6 +52,7 @@ Accessor setter.
 has use_clean_stash => (
     default => 1,
     is      => 'rw',
+    traits => [ 'Clone' ],
 );
 
 =head1 RENDERING ATTRIBUTES
@@ -70,7 +72,8 @@ Printed before the document's nodes.
 Printed after the document nodes.
 
 =cut 
-has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
+has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute
+Clone / ] );
 
 =head2 METHODS
 

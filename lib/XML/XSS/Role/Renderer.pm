@@ -154,5 +154,39 @@ sub _concat_overload {
 
     return $self->$attr;
 }
+
+
+
+sub style_attributes {
+    my $self = shift;
+
+    my %attrs;
+
+    $DB::single = 1;
+
+    return 
+        sort
+        map { $_->name }
+        grep { 'XML::XSS::Role::StyleAttribute' ~~ @{ $_->applied_traits } }
+        grep { $_->has_applied_traits }
+        map { $self->meta->get_attribute( $_ ) }
+        $self->meta->get_attribute_list
+}
+
+sub style_attribute_hash {
+    my $self = shift;
+    my %opt = @_;
+
+    my %hash;
+
+    for my $attr ( $self->style_attributes ) {
+        next unless $opt{all} or $self->$attr->has_value;
+        $hash{$attr} = $self->$attr->value;
+    }
+
+    return %hash;
+   
+}
+
 1;
 

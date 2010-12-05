@@ -151,11 +151,85 @@ use XML::XSS::ProcessingInstruction;
 
 use XML::XSS::Template;
 
+use MooseX::Clone;
+
+with 'MooseX::Clone';
+
 no warnings qw/ uninitialized /;
 
 Moose::Exporter->setup_import_methods(
+    with_meta => [ 'style' ],
     as_is => ['xsst'],
 );
+
+sub style { return; use Data::Dumper; die join " ", $_[0]->class_precedence_list }
+
+#class_has 'master' => (
+#    is => 'ro',
+#    lazy => 1,
+#    lazy_build => 1,
+#);
+
+sub _build_master {
+    my $self = shift;
+
+    return XML::XSS->new;
+
+}
+
+sub master {
+    my $class = shift;
+    $class = ref $class if ref $class;
+
+    my $var = '$'.$class.'::master';
+
+    my $master = eval $var;
+
+    return $master if $master;
+
+    $master = $class->new;
+
+    for my $super ( reverse grep { $_->isa('XML::XSS') } $class->meta->superclasses ) {
+        $master->include( $super->master ) if $super->has_master;
+    }
+
+    eval "$var = \$master";
+
+    return $master;
+}
+
+sub has_master {
+    my $class = shift;
+    $class = ref $class if ref $class;
+
+    return eval '$'.$class.'::master';
+}
+
+sub include {
+    my $self = shift;
+    my $to_include = shift;
+
+    for my $elt ( $to_include->element_keys ) {
+        $self->_set_element( $elt, $to_include->_element( $elt )->clone );
+    }
+
+    $self->set_comment( $to_include->comment );
+
+}
+
+around new => sub {
+my $orig = shift;
+my $self = shift;
+
+    if ( $self->has_master ) {
+        my $self = $self->master->clone;
+        $self->BUILDALL( $self->BUILDARGS( @_ ) );
+        return $self;
+    }
+
+    return $self->$orig(@_);
+
+};
 
 =head1 ATTRIBUTES
 
@@ -176,6 +250,7 @@ has document => (
     default => sub {
         XML::XSS::Document->new( stylesheet => $_[0] );
     },
+    traits => [ 'Clone' ],
 );
 
 
@@ -208,6 +283,7 @@ has 'text' => (
         set_text   => 'set',
         clear_text => 'clear',
     },
+    traits => [ 'Clone' ],
 );
 
 =head2 comment
@@ -226,13 +302,14 @@ Shortcut for
 
 =cut
 
-has 'comment' => (
+has comment => (
     is => 'ro',
     default =>
       sub { XML::XSS::Comment->new( stylesheet => $_[0] ) },
     handles => {
         set_comment => 'set',
     },
+    traits => [ 'Clone' ],
 );
 
 =head2 elements
@@ -250,6 +327,7 @@ has '_elements' => (
         get    => '_element',
         'keys' => 'element_keys',
     },
+    traits => [ 'Clone' ],
 );
 
 =head3 element( $name )
@@ -306,6 +384,7 @@ has 'catchall_element' => (
         XML::XSS::Element->new( stylesheet => $_[0] );
     },
     lazy => 1,
+    traits => [ 'Clone' ],
 );
 
 has pi => (
@@ -313,6 +392,7 @@ has pi => (
     default => sub {
         XML::XSS::ProcessingInstruction->new( stylesheet => $_[0] );
     },
+    traits => [ 'Clone' ],
 );
 
 =head2 stash
@@ -383,7 +463,7 @@ use overload
 
 =head1 METHODS
 
-=head2 set( $name, \%attrs )
+=head2 set( $element_1 => \%attrs, $element_2 => \%attrs_2, ... )
 
 Sets attributes for a rendering node. 
 
@@ -410,9 +490,14 @@ value.
 =cut
 
 sub set {
-    my ( $self, $name, $attrs ) = @_;
+    my $self = shift;
 
-    $self->get($name)->set(%$attrs);
+    while ( @_ ) {
+        my $name = shift;
+        my $attrs = shift;
+
+        $self->get($name)->set(%$attrs);
+    }
 }
 
 sub get {

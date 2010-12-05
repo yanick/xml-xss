@@ -5,11 +5,12 @@ use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 has [ qw/ pre post process / ] =>(
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 no warnings qw/ uninitialized /;

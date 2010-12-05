@@ -33,5 +33,12 @@ $xss->set_text(
 is $xss->render( '<doc>hello?</doc>', {boo => 'yah' } ) 
     => '<doc>XML::LibXML::Text - XML::XSS::Text - yah</doc>';
 
+$xss->set_text(
+    process => 0,
+);
+
+is $xss->render( '<doc>hello?</doc>' ) => '<doc></doc>';
+
+
 done_testing;
 

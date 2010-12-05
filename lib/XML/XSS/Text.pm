@@ -26,8 +26,9 @@ document to be rendered.
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
@@ -56,7 +57,7 @@ If defined, its value is used instead of the original text.
 =cut
 
 has replace => ( 
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 =head2 filter
@@ -72,7 +73,7 @@ even if C<replace> is used.
 =cut
 
 has filter => (
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 
@@ -87,13 +88,31 @@ Printed after the text.
 =cut
 
 has [ qw/ pre post / ] => (
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone/ ] 
+);
+
+=head2 process
+
+If it resolves to false, skip the element altogether.
+
+=head3 get_process()
+
+Attribute getter.
+
+=head3 set_process( $process )
+
+Attribute setter.
+
+=cut
+
+has process => (
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone/ ] 
 );
 
 sub clear {
     my $self = shift;
 
-    for ( qw/ pre post replace filter / ) {
+    for ( qw/ pre post replace filter process / ) {
         my $setter = "clear_$_";
         $self->$setter;
     }
@@ -103,6 +122,9 @@ sub clear {
 sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
+
+    return
+      if $self->has_process and !$self->_render( 'process', $node, $args );
 
     my $text = $node->data;
 

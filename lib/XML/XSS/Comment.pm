@@ -25,8 +25,9 @@ use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
@@ -49,7 +50,8 @@ Same attribute behaviors as in C<XML::XSS::Text>.
 
 =cut 
 
-has [ qw/ showtag pre post rename replace process filter / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
+has [ qw/ showtag pre post rename replace process filter / ] => ( 
+traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] );
 
 sub apply {
     my ( $self, $node, $args ) = @_;
