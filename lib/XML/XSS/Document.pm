@@ -1,14 +1,15 @@
 package XML::XSS::Document;
 BEGIN {
-  $XML::XSS::Document::VERSION = '0.1.3';
+  $XML::XSS::Document::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS document stylesheet rule
 
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
@@ -16,9 +17,11 @@ no warnings qw/ uninitialized /;
 has use_clean_stash => (
     default => 1,
     is      => 'rw',
+    traits => [ 'Clone' ],
 );
 
-has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
+has [ qw/ content pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute
+Clone / ] );
 
 
 sub apply {
@@ -28,7 +31,12 @@ sub apply {
     $self->stylesheet->clear_stash if $self->use_clean_stash;
 
     my $output =  $self->_render( 'pre', $node, $args );
-    $output .= $self->render( $node->childNodes, $args );
+
+    $output .= $self->has_content 
+             ? $self->_render( 'content', $node, $args )
+             : $self->render( $node->childNodes, $args )
+             ;
+
     $output .= $self->_render( 'post', $node, $args );
 
     return $output;
@@ -46,7 +54,7 @@ XML::XSS::Document - XML::XSS document stylesheet rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -100,6 +108,10 @@ Printed before the document's nodes.
 
 Printed after the document nodes.
 
+=head2 content
+
+If defined, will be used instead of the child nodes of the document.
+
 =head2 METHODS
 
 =head3 set( %attrs )
@@ -121,7 +133,7 @@ and returns the resulting string.
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

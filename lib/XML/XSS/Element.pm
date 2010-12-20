@@ -1,6 +1,6 @@
 package XML::XSS::Element;
 BEGIN {
-  $XML::XSS::Element::VERSION = '0.1.3';
+  $XML::XSS::Element::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS element stylesheet rule
 
@@ -95,7 +95,7 @@ XML::XSS::Element - XML::XSS element stylesheet rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -249,7 +249,7 @@ Shortcut for
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -1,6 +1,6 @@
 package XML::XSS::Role::Renderer;
 BEGIN {
-  $XML::XSS::Role::Renderer::VERSION = '0.1.3';
+  $XML::XSS::Role::Renderer::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS role for rendering rule
 
@@ -105,6 +105,40 @@ sub _concat_overload {
 
     return $self->$attr;
 }
+
+
+
+sub style_attributes {
+    my $self = shift;
+
+    my %attrs;
+
+    $DB::single = 1;
+
+    return 
+        sort
+        map { $_->name }
+        grep { 'XML::XSS::Role::StyleAttribute' ~~ @{ $_->applied_traits } }
+        grep { $_->has_applied_traits }
+        map { $self->meta->get_attribute( $_ ) }
+        $self->meta->get_attribute_list
+}
+
+sub style_attribute_hash {
+    my $self = shift;
+    my %opt = @_;
+
+    my %hash;
+
+    for my $attr ( $self->style_attributes ) {
+        next unless $opt{all} or $self->$attr->has_value;
+        $hash{$attr} = $self->$attr->value;
+    }
+
+    return %hash;
+   
+}
+
 1;
 
 
@@ -117,7 +151,7 @@ XML::XSS::Role::Renderer - XML::XSS role for rendering rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 OVERLOADING
 
@@ -172,7 +206,7 @@ is equivalent to
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

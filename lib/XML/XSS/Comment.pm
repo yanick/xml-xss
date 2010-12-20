@@ -1,6 +1,6 @@
 package XML::XSS::Comment;
 BEGIN {
-  $XML::XSS::Comment::VERSION = '0.1.3';
+  $XML::XSS::Comment::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS comment stylesheet rule
 
@@ -9,14 +9,16 @@ use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
 
 
-has [ qw/ showtag pre post rename replace process filter / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute / ] );
+has [ qw/ showtag pre post rename replace process filter / ] => ( 
+traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] );
 
 sub apply {
     my ( $self, $node, $args ) = @_;
@@ -71,7 +73,7 @@ XML::XSS::Comment - XML::XSS comment stylesheet rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -108,7 +110,7 @@ Same attribute behaviors as in C<XML::XSS::Text>.
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

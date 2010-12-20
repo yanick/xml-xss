@@ -1,6 +1,6 @@
 package XML::XSS::ProcessingInstruction;
 BEGIN {
-  $XML::XSS::ProcessingInstruction::VERSION = '0.1.3';
+  $XML::XSS::ProcessingInstruction::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS processing instruction stylesheet rule
 
@@ -8,11 +8,12 @@ use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 has [ qw/ pre post process / ] =>(
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 no warnings qw/ uninitialized /;
@@ -45,11 +46,11 @@ XML::XSS::ProcessingInstruction - XML::XSS processing instruction stylesheet rul
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

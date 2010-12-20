@@ -1,6 +1,6 @@
 package XML::XSS::StyleAttribute;
 BEGIN {
-  $XML::XSS::StyleAttribute::VERSION = '0.1.3';
+  $XML::XSS::StyleAttribute::VERSION = '0.2_0';
 }
 
 # ABSTRACT: Style attribute for XML::XSS stylesheet rule
@@ -73,7 +73,7 @@ XML::XSS::StyleAttribute - Style attribute for XML::XSS stylesheet rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -154,7 +154,7 @@ The string or sub reference used by the style attribute.
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

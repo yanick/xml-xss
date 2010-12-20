@@ -21,12 +21,13 @@ my %module_build_args = (
     'Yanick Champoux <yanick@cpan.org>'
   ],
   'dist_name' => 'XML-XSS',
-  'dist_version' => '0.1.3',
+  'dist_version' => '0.2_0',
   'license' => 'perl',
   'module_name' => 'XML::XSS',
   'recommends' => {},
   'recursive_test_files' => 1,
   'requires' => {
+    'Getopt::Long' => '0',
     'Moose' => '0',
     'Moose::Exporter' => '0',
     'Moose::Role' => '0',
@@ -34,12 +35,15 @@ my %module_build_args = (
     'MooseX::ClassAttribute' => '0',
     'MooseX::Clone' => '0',
     'MooseX::SemiAffordanceAccessor' => '0',
+    'Perl::Tidy' => '0',
     'Scalar::Util' => '0',
     'XML::LibXML' => '0',
     'overload' => '0',
     'perl' => '5.10.0'
   },
-  'script_files' => []
+  'script_files' => [
+    'bin/xss'
+  ]
 );
 
 

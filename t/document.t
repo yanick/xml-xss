@@ -16,5 +16,12 @@ $xss->set( '#document' => {
 is $xss->render( '<doc><foo>bar</foo></doc>' ) 
     =>  "PRE<doc><foo>bar</foo></doc>POST" ;
 
+$xss->set( '#document' => {
+    content => 'INNER',
+} );
+
+is $xss->render( '<doc><foo>bar</foo></doc>' ) 
+    =>  "PREINNERPOST" ;
+
 
 done_testing;

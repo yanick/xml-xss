@@ -4,7 +4,7 @@
       "Yanick Champoux <yanick@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.101900, CPAN::Meta::Converter version 2.101590",
+   "generated_by" : "Dist::Zilla version 4.102345, CPAN::Meta::Converter version 2.101590",
    "license" : [
       "perl_5"
    ],
@@ -26,6 +26,7 @@
       },
       "runtime" : {
          "requires" : {
+            "Getopt::Long" : 0,
             "Moose" : 0,
             "Moose::Exporter" : 0,
             "Moose::Role" : 0,
@@ -33,6 +34,7 @@
             "MooseX::ClassAttribute" : 0,
             "MooseX::Clone" : 0,
             "MooseX::SemiAffordanceAccessor" : 0,
+            "Perl::Tidy" : 0,
             "Scalar::Util" : 0,
             "XML::LibXML" : 0,
             "overload" : 0,
@@ -48,7 +50,7 @@
          }
       }
    },
-   "release_status" : "stable",
+   "release_status" : "testing",
    "resources" : {
       "bugtracker" : {
          "mailto" : "bug-xml-xss at rt.cpan.org",
@@ -61,6 +63,6 @@
          "web" : "http://github.com/yanick/xml-xss/tree"
       }
    },
-   "version" : "0.1.3"
+   "version" : "0.2_0"
 }
 

@@ -1,6 +1,6 @@
 package XML::XSS::Text;
 BEGIN {
-  $XML::XSS::Text::VERSION = '0.1.3';
+  $XML::XSS::Text::VERSION = '0.2_0';
 }
 # ABSTRACT: XML::XSS text stylesheet rule
 
@@ -8,32 +8,38 @@ BEGIN {
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
 
-with 'XML::XSS::Role::Renderer';
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
 
 no warnings qw/ uninitialized /;
 
 
 
 has replace => ( 
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 
 has filter => (
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone / ] 
 );
 
 
 
 has [ qw/ pre post / ] => (
-    traits => [ qw/ XML::XSS::Role::StyleAttribute / ] 
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone/ ] 
+);
+
+
+has process => (
+    traits => [ qw/ XML::XSS::Role::StyleAttribute Clone/ ] 
 );
 
 sub clear {
     my $self = shift;
 
-    for ( qw/ pre post replace filter / ) {
+    for ( qw/ pre post replace filter process / ) {
         my $setter = "clear_$_";
         $self->$setter;
     }
@@ -43,6 +49,9 @@ sub clear {
 sub apply {
     my ( $self, $node, $args ) = @_;
     $args ||= {};
+
+    return
+      if $self->has_process and !$self->_render( 'process', $node, $args );
 
     my $text = $node->data;
 
@@ -76,7 +85,7 @@ XML::XSS::Text - XML::XSS text stylesheet rule
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -134,9 +143,21 @@ Printed after the text.
 
 =head3 setter - set_post( $post )
 
+=head2 process
+
+If it resolves to false, skip the element altogether.
+
+=head3 get_process()
+
+Attribute getter.
+
+=head3 set_process( $process )
+
+Attribute setter.
+
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 

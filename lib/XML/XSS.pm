@@ -1,6 +1,6 @@
 package XML::XSS;
 BEGIN {
-  $XML::XSS::VERSION = '0.1.3';
+  $XML::XSS::VERSION = '0.2_0';
 }
 # ABSTRACT: XML stylesheet system
 
@@ -23,11 +23,99 @@ use XML::XSS::ProcessingInstruction;
 
 use XML::XSS::Template;
 
+use MooseX::Clone;
+
+with 'MooseX::Clone';
+
 no warnings qw/ uninitialized /;
 
 Moose::Exporter->setup_import_methods(
+    with_meta => [ 'style' ],
     as_is => ['xsst'],
 );
+
+sub style { 
+    my $metaclass = shift;
+    $DB::single = 1;
+    my $master = ($metaclass->linearized_isa)[0]->master;
+
+    my $element = shift;
+
+    my %attr = @_;
+
+    $master->set( $element, \%attr );
+
+}
+
+#class_has 'master' => (
+#    is => 'ro',
+#    lazy => 1,
+#    lazy_build => 1,
+#);
+
+sub _build_master {
+    my $self = shift;
+
+    return XML::XSS->new;
+
+}
+
+sub master {
+    my $class = shift;
+    $class = ref $class if ref $class;
+
+    my $var = '$'.$class.'::master';
+
+    my $master = eval $var;
+
+    return $master if $master;
+
+    $master = $class->new;
+
+    for my $super ( reverse grep { $_->isa('XML::XSS') } $class->meta->superclasses ) {
+        $master->include( $super->master ) if $super->has_master;
+    }
+
+    eval "$var = \$master";
+
+    return $master;
+}
+
+sub has_master {
+    my $class = shift;
+    $class = ref $class if ref $class;
+
+    return eval '$'.$class.'::master';
+}
+
+sub include {
+    my $self = shift;
+    my $to_include = shift;
+
+    for my $elt ( $to_include->element_keys ) {
+        $self->_set_element( $elt, $to_include->_element( $elt )->clone );
+    }
+
+    $self->set_comment( $to_include->comment->style_attribute_hash );
+    $self->set_pi( $to_include->pi->style_attribute_hash );
+    $self->set_text( $to_include->text->style_attribute_hash );
+
+
+}
+
+around new => sub {
+    my $orig = shift;
+    my $self = shift;
+
+    if ( $self->has_master ) {
+        my $self = $self->master->clone;
+        $self->BUILDALL( $self->BUILDARGS(@_) );
+        return $self;
+    }
+
+    return $self->$orig(@_);
+
+};
 
 
 has document => (
@@ -35,6 +123,7 @@ has document => (
     default => sub {
         XML::XSS::Document->new( stylesheet => $_[0] );
     },
+    traits => [ 'Clone' ],
 );
 
 
@@ -46,16 +135,18 @@ has 'text' => (
         set_text   => 'set',
         clear_text => 'clear',
     },
+    traits => [ 'Clone' ],
 );
 
 
-has 'comment' => (
+has comment => (
     is => 'ro',
     default =>
       sub { XML::XSS::Comment->new( stylesheet => $_[0] ) },
     handles => {
         set_comment => 'set',
     },
+    traits => [ 'Clone' ],
 );
 
 
@@ -68,6 +159,7 @@ has '_elements' => (
         get    => '_element',
         'keys' => 'element_keys',
     },
+    traits => [ 'Clone' ],
 );
 
 
@@ -101,12 +193,17 @@ has 'catchall_element' => (
         XML::XSS::Element->new( stylesheet => $_[0] );
     },
     lazy => 1,
+    traits => [ 'Clone' ],
 );
 
 has pi => (
     is      => 'ro',
     default => sub {
         XML::XSS::ProcessingInstruction->new( stylesheet => $_[0] );
+    },
+    traits => [ 'Clone' ],
+    handles => {
+        set_pi => 'set',
     },
 );
 
@@ -127,9 +224,14 @@ use overload
 
 
 sub set {
-    my ( $self, $name, $attrs ) = @_;
+    my $self = shift;
 
-    $self->get($name)->set(%$attrs);
+    while ( @_ ) {
+        my $name = shift;
+        my $attrs = shift;
+
+        $self->get($name)->set(%$attrs);
+    }
 }
 
 sub get {
@@ -252,7 +354,7 @@ XML::XSS - XML stylesheet system
 
 =head1 VERSION
 
-version 0.1.3
+version 0.2_0
 
 =head1 SYNOPSIS
 
@@ -503,7 +605,7 @@ and style attributes:
 
 =head1 METHODS
 
-=head2 set( $name, \%attrs )
+=head2 set( $element_1 => \%attrs, $element_2 => \%attrs_2, ... )
 
 Sets attributes for a rendering node. 
 
@@ -572,7 +674,7 @@ information in addition to the C<stash>.
 
 =head1 AUTHOR
 
-  Yanick Champoux <yanick@cpan.org>
+Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
