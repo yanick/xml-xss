@@ -1,0 +1,14 @@
+
+* Be able to do
+
+style [ qw/ foo bar /] => (
+    pre => ...
+);
+
+* have the catch-all with the other elements
+
+* namespaces
+
+style { $galuga => 'perl' } => (
+);
+

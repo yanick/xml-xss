@@ -162,7 +162,18 @@ Moose::Exporter->setup_import_methods(
     as_is => ['xsst'],
 );
 
-sub style { return; use Data::Dumper; die join " ", $_[0]->class_precedence_list }
+sub style { 
+    my $metaclass = shift;
+    $DB::single = 1;
+    my $master = ($metaclass->linearized_isa)[0]->master;
+
+    my $element = shift;
+
+    my %attr = @_;
+
+    $master->set( $element, \%attr );
+
+}
 
 #class_has 'master' => (
 #    is => 'ro',
@@ -213,17 +224,20 @@ sub include {
         $self->_set_element( $elt, $to_include->_element( $elt )->clone );
     }
 
-    $self->set_comment( $to_include->comment );
+    $self->set_comment( $to_include->comment->style_attribute_hash );
+    $self->set_pi( $to_include->pi->style_attribute_hash );
+    $self->set_text( $to_include->text->style_attribute_hash );
+
 
 }
 
 around new => sub {
-my $orig = shift;
-my $self = shift;
+    my $orig = shift;
+    my $self = shift;
 
     if ( $self->has_master ) {
         my $self = $self->master->clone;
-        $self->BUILDALL( $self->BUILDARGS( @_ ) );
+        $self->BUILDALL( $self->BUILDARGS(@_) );
         return $self;
     }
 
@@ -393,6 +407,9 @@ has pi => (
         XML::XSS::ProcessingInstruction->new( stylesheet => $_[0] );
     },
     traits => [ 'Clone' ],
+    handles => {
+        set_pi => 'set',
+    },
 );
 
 =head2 stash

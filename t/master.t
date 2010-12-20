@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;                      # last test to print
+use Test::More;                      # last test to print
 
 use lib 't/lib';
 
@@ -38,5 +38,13 @@ my $full_xml = <<'END';
 </doc>
 END
 
-is( B->new->render( $full_xml ), '' );
+is( B->new->render( $full_xml )."\n", <<'END' );
+<doc>[text]
+    A[text]
+    <comment> comment </comment>[text]
+    [pi]<?foo attr="bar" ?>[text]
+    some text
+</doc>
+END
 
+done_testing();
