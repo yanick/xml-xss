@@ -71,8 +71,12 @@ Printed before the document's nodes.
 
 Printed after the document nodes.
 
+=head2 content
+
+If defined, will be used instead of the child nodes of the document.
+
 =cut 
-has [ qw/ pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute
+has [ qw/ content pre post / ] => ( traits => [ qw/ XML::XSS::Role::StyleAttribute
 Clone / ] );
 
 =head2 METHODS
@@ -103,7 +107,12 @@ sub apply {
     $self->stylesheet->clear_stash if $self->use_clean_stash;
 
     my $output =  $self->_render( 'pre', $node, $args );
-    $output .= $self->render( $node->childNodes, $args );
+
+    $output .= $self->has_content 
+             ? $self->_render( 'content', $node, $args )
+             : $self->render( $node->childNodes, $args )
+             ;
+
     $output .= $self->_render( 'post', $node, $args );
 
     return $output;
