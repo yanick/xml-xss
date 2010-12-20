@@ -1,6 +1,8 @@
 Revision history for XML::XSS
 
 {{$NEXT}}
+
+0.2_0     2010-12-20 18:32:38 America/Montreal
     * add $master to stylesheet classes.
     * add 'style' keyword.
 
