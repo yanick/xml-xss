@@ -1,0 +1,44 @@
+#!/usr/bin/env perl
+
+package XML::XSS::xss;
+#ABSTRACT: command-line XML::XSS processor
+
+use Getopt::Long;
+
+GetOptions(
+    'script=s' => \my $script,
+    'm=s' => \my $module,
+    'stylesheet=s' => \my $stylesheet,
+);
+
+my $document = join '', <>;
+
+my $xss;
+
+if( $stylesheet ) {
+    my $class = "XML::XSS::Stylesheet::$stylesheet";
+    eval "use $class";
+    die $@ if $@;
+
+    $xss = $class->new;
+}
+elsif ( $script ) {
+    $xss = do $script;
+}
+elsif( $module ) {
+    eval "use $module";
+    $xss = $module->new;
+}
+
+print $xss->render( $document );
+
+__END__
+
+=pod
+
+=head1 SYNOPSIS
+
+    xss --stylesheet <stylesheet> document.xml
+
+
+=cut
