@@ -20,16 +20,16 @@ XML::XSS::Template provides a templating markup language to ease the
 writing of rules for XML::XSS stylesheet rules. So that the style
 
     $xss.'chapter'.'content' *= sub {
-        my ( $r, $node, $args ) = @_;
+        my ( $style, $node, $args ) = @_;
         my $output;
 
-        $output .= $r->render( $node->findnodes( 'title' ) );
+        $output .= $style->render( $node->findnodes( 'title' ) );
 
-        $output .= $r->render( $node->findnodes( 'para' ) );
+        $output .= $style->render( $node->findnodes( 'para' ) );
 
         if ( my @notes = $node->findnodes('note') ) {
             $output .= '<div class="notes">'
-                    .  $r->render( @notes )
+                    .  $style->render( @notes )
                     .  '</div>';
         }
 
@@ -44,7 +44,7 @@ can be written
 
         <% if ( my  @notes = $node->findnodes('note') ) { %>
             <div class="notes">
-                <%= $r->render( @notes ) %>
+                <%= $style->render( @notes ) %>
             </div>
         <% } %>
     };
@@ -111,7 +111,7 @@ show in the rendered document.
 Takes the XPath expression, applies it on the current
 node and renders the resulting nodes. Equivalent of doing
 
-    <%= $r->render( $node->findnodes( $xpath ), $args ) %>
+    <%= $style->render( $node->findnodes( $xpath ), $args ) %>
 
 Example:
 
@@ -133,6 +133,8 @@ use 5.10.0;
 
 use Moose;
 use MooseX::SemiAffordanceAccessor;
+
+with qw(MooseX::Clone);
 
 use overload
   '&{}'  => sub { $_[0]->compiled },
@@ -162,10 +164,10 @@ of the stylesheet.
 From the point of view of the stylesheet, the template object created by
 C<xsst> is just another coderef, and will be passed the usual rendering node,
 xml node and option hashref arguments. For convenience, those are already
-made available as C<$r>, C<$node> and C<$args>.
+made available as C<$style>, C<$node> and C<$args>.
 
     my $template = xstt q{
-        <h2><%= $r->stylesheet->stash->{section_nbr}++ %>. <%~ title %></h2>
+        <h2><%= $style->stylesheet->stash->{section_nbr}++ %>. <%~ title %></h2>
         <% for my $child ( $node->childNodes ) { %>
             do something...
         <% } %>
@@ -195,23 +197,36 @@ The original template string.
 
 =cut
 
-has template => ( isa => 'Str', is => 'rw', required => 1 );
+has template => ( 
+    isa => 'Str', 
+    is => 'rw', 
+    required => 1,
+    traits => [qw(Clone)],
+);
 
 =head2 code
 
 The code generated out of the original template, as a string.
 
-    my $template = xsst q{ Hello <%= $r->stylesheet->stash->{name} %> };
+    my $template = xsst q{ Hello <%= $style->stylesheet->stash->{name} %> };
     print $template->code;
 
 =cut
 
-has code => ( isa => 'Str', is => 'rw' );
+has code => ( isa => 'Str', is => 'rw',
+    traits => [qw(Clone)],
+);
 
-has compiled => ( is => 'rw' );
+has compiled => ( is => 'rw',
+    traits => [qw(Clone)],
+);
 
-has _filename => ( is => 'rw' );
-has _line     => ( is => 'rw' );
+has _filename => ( is => 'rw',
+    traits => [qw(Clone)],
+);
+has _line     => ( is => 'rw',
+    traits => [qw(Clone)],
+);
 
 sub BUILD {
     my $self = shift;
@@ -220,7 +235,7 @@ sub BUILD {
 
     my $sub = <<"END_SUB";
 sub {
-my ( \$r, \$node, \$args ) = \@_;
+my ( \$style, \$node, \$args ) = \@_;
 local *STDOUT;
 my \$output;
 open STDOUT, '>', \\\$output or die;
@@ -319,7 +334,7 @@ sub _parse_block {
             $code =~ s/\A\s+|\s+Z//g;    # trim
             $code =~ s/'/\\'/g;
             $code =
-              qq{eval { print \$r->render(\$node->findnodes('$code'), \$args) } or warn $@;};
+              qq{eval { print \$style->render(\$node->findnodes('$code'), \$args) } or warn $@;};
 
         }
         when ('@') {
