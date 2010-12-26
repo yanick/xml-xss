@@ -656,6 +656,9 @@ sub resolve {
         when ('XML::LibXML::Text') {
             return $self->text;
         }
+        when ('XML::LibXML::CDATASection') {
+            return $self->text;
+        }
         when ( 'XML::LibXML::Comment' ) {
             return $self->comment;
         }
