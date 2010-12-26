@@ -202,7 +202,7 @@ sub apply {
 
         $output .= join ' ', 
             "<$name",
-            map { join '=', $_->nodeName, "'$_->serializeContent'" }
+            map { join '=', $_->nodeName, "'@{[$_->serializeContent]}'" }
                 $node->attributes;
         $output .= '>';
     }
