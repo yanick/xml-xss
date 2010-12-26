@@ -4,6 +4,7 @@ LICENSE
 MANIFEST
 META.json
 META.yml
+README
 SIGNATURE
 bin/xss
 lib/XML/XSS.pm

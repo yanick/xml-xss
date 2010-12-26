@@ -2,6 +2,8 @@ Revision history for XML::XSS
 
 {{$NEXT}}
     * deal with CDATASection (as a text node)
+    * change the name of the style object from $r to $style
+    * attribute values now printed properly
 
 0.2_0     2010-12-20 18:32:38 America/Montreal
     * add $master to stylesheet classes.
