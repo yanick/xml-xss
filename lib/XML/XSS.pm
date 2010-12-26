@@ -1,6 +1,6 @@
 package XML::XSS;
 BEGIN {
-  $XML::XSS::VERSION = '0.2_0';
+  $XML::XSS::VERSION = '0.3.0';
 }
 # ABSTRACT: XML stylesheet system
 
@@ -329,6 +329,9 @@ sub resolve {
         when ('XML::LibXML::Text') {
             return $self->text;
         }
+        when ('XML::LibXML::CDATASection') {
+            return $self->text;
+        }
         when ( 'XML::LibXML::Comment' ) {
             return $self->comment;
         }
@@ -354,7 +357,7 @@ XML::XSS - XML stylesheet system
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

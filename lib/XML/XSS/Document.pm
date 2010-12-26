@@ -1,6 +1,6 @@
 package XML::XSS::Document;
 BEGIN {
-  $XML::XSS::Document::VERSION = '0.2_0';
+  $XML::XSS::Document::VERSION = '0.3.0';
 }
 # ABSTRACT: XML::XSS document stylesheet rule
 
@@ -54,7 +54,7 @@ XML::XSS::Document - XML::XSS document stylesheet rule
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

@@ -4,6 +4,7 @@ LICENSE
 MANIFEST
 META.json
 META.yml
+README
 SIGNATURE
 bin/xss
 lib/XML/XSS.pm
@@ -19,6 +20,7 @@ lib/XML/XSS/Template.pm
 lib/XML/XSS/Text.pm
 t/000-report-versions.t
 t/basic.t
+t/cdata.t
 t/document.t
 t/element.t
 t/lib/A.pm

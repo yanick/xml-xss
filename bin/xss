@@ -2,7 +2,7 @@
 
 package XML::XSS::xss;
 BEGIN {
-  $XML::XSS::xss::VERSION = '0.2_0';
+  $XML::XSS::xss::VERSION = '0.3.0';
 }
 #ABSTRACT: command-line XML::XSS processor
 
@@ -45,7 +45,7 @@ XML::XSS::xss - command-line XML::XSS processor
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

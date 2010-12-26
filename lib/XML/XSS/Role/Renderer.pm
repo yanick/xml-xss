@@ -1,6 +1,6 @@
 package XML::XSS::Role::Renderer;
 BEGIN {
-  $XML::XSS::Role::Renderer::VERSION = '0.2_0';
+  $XML::XSS::Role::Renderer::VERSION = '0.3.0';
 }
 # ABSTRACT: XML::XSS role for rendering rule
 
@@ -151,7 +151,7 @@ XML::XSS::Role::Renderer - XML::XSS role for rendering rule
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 OVERLOADING
 

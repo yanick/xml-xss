@@ -1,6 +1,6 @@
 package XML::XSS::Text;
 BEGIN {
-  $XML::XSS::Text::VERSION = '0.2_0';
+  $XML::XSS::Text::VERSION = '0.3.0';
 }
 # ABSTRACT: XML::XSS text stylesheet rule
 
@@ -85,7 +85,7 @@ XML::XSS::Text - XML::XSS text stylesheet rule
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

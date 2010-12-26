@@ -1,6 +1,6 @@
 package XML::XSS::StyleAttribute;
 BEGIN {
-  $XML::XSS::StyleAttribute::VERSION = '0.2_0';
+  $XML::XSS::StyleAttribute::VERSION = '0.3.0';
 }
 
 # ABSTRACT: Style attribute for XML::XSS stylesheet rule
@@ -73,7 +73,7 @@ XML::XSS::StyleAttribute - Style attribute for XML::XSS stylesheet rule
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

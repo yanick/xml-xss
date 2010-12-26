@@ -1,6 +1,6 @@
 package XML::XSS::Element;
 BEGIN {
-  $XML::XSS::Element::VERSION = '0.2_0';
+  $XML::XSS::Element::VERSION = '0.3.0';
 }
 # ABSTRACT: XML::XSS element stylesheet rule
 
@@ -52,7 +52,7 @@ sub apply {
 
         $output .= join ' ', 
             "<$name",
-            map { join '=', $_->nodeName, "'$_->serializeContent'" }
+            map { join '=', $_->nodeName, "'@{[$_->serializeContent]}'" }
                 $node->attributes;
         $output .= '>';
     }
@@ -95,7 +95,7 @@ XML::XSS::Element - XML::XSS element stylesheet rule
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 SYNOPSIS
 

@@ -1,6 +1,6 @@
 package XML::XSS::Stylesheet::HTML2TD;
 BEGIN {
-  $XML::XSS::Stylesheet::HTML2TD::VERSION = '0.2_0';
+  $XML::XSS::Stylesheet::HTML2TD::VERSION = '0.3.0';
 }
 
 use Moose;
@@ -78,7 +78,7 @@ XML::XSS::Stylesheet::HTML2TD
 
 =head1 VERSION
 
-version 0.2_0
+version 0.3.0
 
 =head1 AUTHOR
 
