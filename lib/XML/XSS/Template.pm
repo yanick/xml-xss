@@ -290,7 +290,7 @@ sub _parse_template {
         ( $pf, $pl ) = ( $block->[3], $block->[4] );
         if ( $block->[0] and length $block->[1] ) {
             $block->[1] =~ s/\|/\\\|/g;
-            $block->[1] = 'print(q|' . $block->[1] . '|);';
+            $block->[1] = 'print(qq|' . quotemeta($block->[1]) . '|);';
         }
 
         $code .= $block->[1];

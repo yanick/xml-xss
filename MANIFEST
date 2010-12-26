@@ -23,6 +23,7 @@ t/basic.t
 t/cdata.t
 t/document.t
 t/element.t
+t/escaping.t
 t/lib/A.pm
 t/lib/B.pm
 t/lib/C.pm

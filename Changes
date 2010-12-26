@@ -1,6 +1,7 @@
 Revision history for XML::XSS
 
 {{$NEXT}}
+    * templates deal with metacharacters correctly
 
 0.3.0     2010-12-25 22:31:17 America/Montreal
     * deal with CDATASection (as a text node)
