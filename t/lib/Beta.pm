@@ -1,4 +1,4 @@
-package B;
+package Beta;
 
 use Moose;
 use XML::XSS;
