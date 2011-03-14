@@ -3,6 +3,8 @@ Revision history for XML::XSS
 {{$NEXT}}
     * templates deal with metacharacters correctly
 
+    * fixes to work with Moose 1.99+, as well as older versions. (Dave Rolsky)
+
 0.3.0     2010-12-25 22:31:17 America/Montreal
     * deal with CDATASection (as a text node)
     * change the name of the style object from $r to $style
