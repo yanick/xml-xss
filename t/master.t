@@ -20,14 +20,14 @@ my $r = XML::XSS->new->render( '<doc><foo>hi</foo></doc>' );
 is $r => '<doc>Xhi</doc>', 'stylesheet inherit from master';
 
 use A;
-use B;
+use Beta;
 
 my $xml = "<doc><a/><b/><c/></doc>";
 
 $DB::single = 1;
 
 is( A->new->render( $xml ), '<doc>A<b></b><c></c></doc>' );
-is( B->new->render( $xml ), '<doc>AB<c></c></doc>' );
+is( Beta->new->render( $xml ), '<doc>AB<c></c></doc>' );
 
 my $full_xml = <<'END';
 <doc>
@@ -38,7 +38,7 @@ my $full_xml = <<'END';
 </doc>
 END
 
-is( B->new->render( $full_xml )."\n", <<'END' );
+is( Beta->new->render( $full_xml )."\n", <<'END' );
 <doc>[text]
     A[text]
     <comment> comment </comment>[text]

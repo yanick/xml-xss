@@ -1,6 +1,9 @@
 package XML::XSS::Element;
 BEGIN {
-  $XML::XSS::Element::VERSION = '0.3.0';
+  $XML::XSS::Element::AUTHORITY = 'cpan:yanick';
+}
+BEGIN {
+  $XML::XSS::Element::VERSION = '0.3.1';
 }
 # ABSTRACT: XML::XSS element stylesheet rule
 
@@ -95,7 +98,7 @@ XML::XSS::Element - XML::XSS element stylesheet rule
 
 =head1 VERSION
 
-version 0.3.0
+version 0.3.1
 
 =head1 SYNOPSIS
 
@@ -253,7 +256,7 @@ Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Yanick Champoux.
+This software is copyright (c) 2011 by Yanick Champoux.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

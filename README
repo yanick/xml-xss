@@ -2,7 +2,7 @@ NAME
     XML::XSS - XML stylesheet system
 
 VERSION
-    version 0.3.0
+    version 0.3.1
 
 SYNOPSIS
         use XML::XSS;
@@ -289,7 +289,7 @@ AUTHOR
     Yanick Champoux <yanick@cpan.org>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2010 by Yanick Champoux.
+    This software is copyright (c) 2011 by Yanick Champoux.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.

@@ -1,6 +1,9 @@
 package XML::XSS::ProcessingInstruction;
 BEGIN {
-  $XML::XSS::ProcessingInstruction::VERSION = '0.3.0';
+  $XML::XSS::ProcessingInstruction::AUTHORITY = 'cpan:yanick';
+}
+BEGIN {
+  $XML::XSS::ProcessingInstruction::VERSION = '0.3.1';
 }
 # ABSTRACT: XML::XSS processing instruction stylesheet rule
 
@@ -46,7 +49,7 @@ XML::XSS::ProcessingInstruction - XML::XSS processing instruction stylesheet rul
 
 =head1 VERSION
 
-version 0.3.0
+version 0.3.1
 
 =head1 AUTHOR
 
@@ -54,7 +57,7 @@ Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Yanick Champoux.
+This software is copyright (c) 2011 by Yanick Champoux.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

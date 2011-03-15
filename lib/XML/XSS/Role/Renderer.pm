@@ -1,11 +1,14 @@
 package XML::XSS::Role::Renderer;
 BEGIN {
-  $XML::XSS::Role::Renderer::VERSION = '0.3.0';
+  $XML::XSS::Role::Renderer::AUTHORITY = 'cpan:yanick';
+}
+BEGIN {
+  $XML::XSS::Role::Renderer::VERSION = '0.3.1';
 }
 # ABSTRACT: XML::XSS role for rendering rule
 
-#use MooseX::SemiAffordanceAccessor;
 use Moose::Role;
+use MooseX::SemiAffordanceAccessor;
 
 use Scalar::Util qw/ refaddr /;
 
@@ -151,7 +154,7 @@ XML::XSS::Role::Renderer - XML::XSS role for rendering rule
 
 =head1 VERSION
 
-version 0.3.0
+version 0.3.1
 
 =head1 OVERLOADING
 
@@ -210,7 +213,7 @@ Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Yanick Champoux.
+This software is copyright (c) 2011 by Yanick Champoux.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

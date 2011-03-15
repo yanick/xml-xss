@@ -1,6 +1,9 @@
 package XML::XSS::Template;
 BEGIN {
-  $XML::XSS::Template::VERSION = '0.3.0';
+  $XML::XSS::Template::AUTHORITY = 'cpan:yanick';
+}
+BEGIN {
+  $XML::XSS::Template::VERSION = '0.3.1';
 }
 
 # ABSTRACT: XML::XSS templates
@@ -122,7 +125,7 @@ sub _parse_template {
         ( $pf, $pl ) = ( $block->[3], $block->[4] );
         if ( $block->[0] and length $block->[1] ) {
             $block->[1] =~ s/\|/\\\|/g;
-            $block->[1] = 'print(q|' . $block->[1] . '|);';
+            $block->[1] = 'print(qq|' . quotemeta($block->[1]) . '|);';
         }
 
         $code .= $block->[1];
@@ -196,7 +199,7 @@ XML::XSS::Template - XML::XSS templates
 
 =head1 VERSION
 
-version 0.3.0
+version 0.3.1
 
 =head1 SYNOPSIS
 
@@ -370,7 +373,7 @@ Yanick Champoux <yanick@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2010 by Yanick Champoux.
+This software is copyright (c) 2011 by Yanick Champoux.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
