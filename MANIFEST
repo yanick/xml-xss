@@ -5,6 +5,7 @@ MANIFEST
 META.json
 META.yml
 README
+README.mkdn
 SIGNATURE
 bin/xss
 lib/XML/XSS.pm
@@ -25,7 +26,7 @@ t/document.t
 t/element.t
 t/escaping.t
 t/lib/A.pm
-t/lib/B.pm
+t/lib/Beta.pm
 t/lib/C.pm
 t/lib/My/Test/Class.pm
 t/lib/My/Test/Class/Load.pm
