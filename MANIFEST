@@ -1,5 +1,8 @@
+AUTHOR_PLEDGE
 Build.PL
+CONTRIBUTORS
 Changes
+INSTALL
 LICENSE
 MANIFEST
 META.json
@@ -19,7 +22,8 @@ lib/XML/XSS/StyleAttribute.pm
 lib/XML/XSS/Stylesheet/HTML2TD.pm
 lib/XML/XSS/Template.pm
 lib/XML/XSS/Text.pm
-t/000-report-versions.t
+t/00-compile.t
+t/000-report-versions-tiny.t
 t/basic.t
 t/cdata.t
 t/document.t
@@ -44,3 +48,4 @@ t/set.t
 t/style_attributes.t
 t/test-class.t
 t/text.t
+xt/release/unused-vars.t
