@@ -39,7 +39,7 @@ style '#document' => (
 );
 
 sub pre_element {
-    my ( $self, $node, $args ) = @_;
+    my ( $self, $node ) = @_;
 
     my $name = $node->nodeName;
 

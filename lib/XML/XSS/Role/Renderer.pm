@@ -160,10 +160,6 @@ sub _concat_overload {
 sub style_attributes {
     my $self = shift;
 
-    my %attrs;
-
-    $DB::single = 1;
-
     return 
         sort
         map { $_->name }
