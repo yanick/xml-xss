@@ -88,8 +88,7 @@ use overload
   '='    => sub { shift },
   'eq'   => sub {
     my ( $a, $b ) = @_;
-    return ref($a) eq ref($b)
-      and refaddr($a) == refaddr($b);
+    return( ref($a) eq ref($b) and refaddr($a) == refaddr($b) );
   };
 
 =head1 ATTRIBUTES
