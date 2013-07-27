@@ -1,133 +1,13 @@
 package XML::XSS::Template;
+BEGIN {
+  $XML::XSS::Template::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $XML::XSS::Template::VERSION = '0.3.2';
+}
 
 # ABSTRACT: XML::XSS templates
 
-=head1 SYNOPSIS
-
-    use XML::XSS;
-
-    my $xss = XML::XSS->new;
-
-    $xss.'chapter'.'content' *= xsst q{
-        <%~ title %>
-        <%~ para %>
-        <%~ note %>
-    };
-
-=head1 DESCRIPTION
-
-XML::XSS::Template provides a templating markup language to ease the
-writing of rules for XML::XSS stylesheet rules. So that the style
-
-    $xss.'chapter'.'content' *= sub {
-        my ( $style, $node, $args ) = @_;
-        my $output;
-
-        $output .= $style->render( $node->findnodes( 'title' ) );
-
-        $output .= $style->render( $node->findnodes( 'para' ) );
-
-        if ( my @notes = $node->findnodes('note') ) {
-            $output .= '<div class="notes">'
-                    .  $style->render( @notes )
-                    .  '</div>';
-        }
-
-        return $output;
-    };
-
-can be written
-
-    $xss.'chapter'.'content' *= xsst q{
-        <%~ title %>
-        <%~ para %>
-
-        <% if ( my  @notes = $node->findnodes('note') ) { %>
-            <div class="notes">
-                <%= $style->render( @notes ) %>
-            </div>
-        <% } %>
-    };
-
-
-=head1 TEMPLATE SYNTAX
-
-The template directives are surrounded by '<%', '%>' delimiters.
-An optional dash can be squeezed in ('<-%', '%->'), which will
-cause all preceding or following whitespaces (including carriage returns) 
-to be squished from the rendered document. 
-This is useful to keep a stylesheet readable without
-generating transformed document with many whitespace gaps. The dash can be 
-added independently to the right and left delimiter.
-
-For example
-
-    <h1>
-        <-%@ /doc/title %->
-    </h1>
-
-will be rendered as
-
-    <h1>A Tale of Two Cities</h1>
-
-As an empty directive is an no-op, one can 
-take advantage of it and use '<-%%->' as
-a magic template compacter.
-
-=head2 Template Directives
-
-=head3 <%  %>
-
-Evaluates the code enclosed without printing anything.
-
-Example:
-
-    <% my $now = localtime %>
-
-To make the directive output something, simply C<print> it.
-
-    <% print "oooh, shiny" if $thingy->albedo_index > 50  %>
-
-To create a loop in your template, use two directives to wrap the opening and
-closing pieces of code:
-
-    <% for my $item ( @shopping_list ) { %>
-        <p>I need a <%= $item %>.</p>
-    <% } %>
-
-=head3 <%= %>
-
-Evaluates the enclosed code and prints its result. 
-
-    Author: <%= 'Hi ' + $name %>
-
-=head3 <%# %>
-
-Comments out the enclosed text, which will neither be executed or
-show in the rendered document.
-
-=head3 <%~ $xpath %>
-
-Takes the XPath expression, applies it on the current
-node and renders the resulting nodes. Equivalent of doing
-
-    <%= $style->render( $node->findnodes( $xpath ), $args ) %>
-
-Example:
-
-    $xss->set( chapter => { content => <<'END_CONTENT' } );
-        <%~ title %>   <%# process the title node %>
-        <%~ para %>    <%# ... and then the paragraphs %>
-        <%~ note %>    <%# ... and the notes %>
-    END_CONTENT
-
-
-=head3 <%@ $xpath %>
-
-Takes the XPath expression and prints its value.  Equivalent of doing
-
-    <%= $node->findvalue( $xpath ) %>
-=cut
 
 use 5.10.0;
 
@@ -144,36 +24,6 @@ no warnings qw/ uninitialized /;
 
 our @sigils = qw/ = ~ @ /;
 
-=head1 EXPORTED FUNCTIONS
-
-=head2 xsst( $template )
-
-Takes the template given as a string and convert it as a 
-C<XML::XSS::Template> object ready to be used by a style attribute 
-of the stylesheet.
-
-    my $template = xsst q{
-        <div>
-            <h2>List of stuff</h2>
-            <%~ item %>
-        </div>
-    };
-
-    $xss->set( list => { content => $template } );
-
-From the point of view of the stylesheet, the template object created by
-C<xsst> is just another coderef, and will be passed the usual rendering node,
-xml node and option hashref arguments. For convenience, those are already
-made available as C<$style>, C<$node> and C<$args>.
-
-    my $template = xstt q{
-        <h2><%= $style->stylesheet->stash->{section_nbr}++ %>. <%~ title %></h2>
-        <% for my $child ( $node->childNodes ) { %>
-            do something...
-        <% } %>
-    };
-
-=cut
 
 Moose::Exporter->setup_import_methods( as_is => ['xsst'], );
 
@@ -189,13 +39,6 @@ sub xsst($) {
     );
 }
 
-=head1 ATTRIBUTES
-
-=head2 template
-
-The original template string.
-
-=cut
 
 has template => ( 
     isa => 'Str', 
@@ -204,14 +47,6 @@ has template => (
     traits => [qw(Clone)],
 );
 
-=head2 code
-
-The code generated out of the original template, as a string.
-
-    my $template = xsst q{ Hello <%= $style->stylesheet->stash->{name} %> };
-    print $template->code;
-
-=cut
 
 has code => ( isa => 'Str', is => 'rw',
     traits => [qw(Clone)],
@@ -356,3 +191,191 @@ sub _parse_block {
 
 __END__
 
+=pod
+
+=head1 NAME
+
+XML::XSS::Template - XML::XSS templates
+
+=head1 VERSION
+
+version 0.3.2
+
+=head1 SYNOPSIS
+
+    use XML::XSS;
+
+    my $xss = XML::XSS->new;
+
+    $xss.'chapter'.'content' *= xsst q{
+        <%~ title %>
+        <%~ para %>
+        <%~ note %>
+    };
+
+=head1 DESCRIPTION
+
+XML::XSS::Template provides a templating markup language to ease the
+writing of rules for XML::XSS stylesheet rules. So that the style
+
+    $xss.'chapter'.'content' *= sub {
+        my ( $style, $node, $args ) = @_;
+        my $output;
+
+        $output .= $style->render( $node->findnodes( 'title' ) );
+
+        $output .= $style->render( $node->findnodes( 'para' ) );
+
+        if ( my @notes = $node->findnodes('note') ) {
+            $output .= '<div class="notes">'
+                    .  $style->render( @notes )
+                    .  '</div>';
+        }
+
+        return $output;
+    };
+
+can be written
+
+    $xss.'chapter'.'content' *= xsst q{
+        <%~ title %>
+        <%~ para %>
+
+        <% if ( my  @notes = $node->findnodes('note') ) { %>
+            <div class="notes">
+                <%= $style->render( @notes ) %>
+            </div>
+        <% } %>
+    };
+
+=head1 TEMPLATE SYNTAX
+
+The template directives are surrounded by '<%', '%>' delimiters.
+An optional dash can be squeezed in ('<-%', '%->'), which will
+cause all preceding or following whitespaces (including carriage returns) 
+to be squished from the rendered document. 
+This is useful to keep a stylesheet readable without
+generating transformed document with many whitespace gaps. The dash can be 
+added independently to the right and left delimiter.
+
+For example
+
+    <h1>
+        <-%@ /doc/title %->
+    </h1>
+
+will be rendered as
+
+    <h1>A Tale of Two Cities</h1>
+
+As an empty directive is an no-op, one can 
+take advantage of it and use '<-%%->' as
+a magic template compacter.
+
+=head2 Template Directives
+
+=head3 <%  %>
+
+Evaluates the code enclosed without printing anything.
+
+Example:
+
+    <% my $now = localtime %>
+
+To make the directive output something, simply C<print> it.
+
+    <% print "oooh, shiny" if $thingy->albedo_index > 50  %>
+
+To create a loop in your template, use two directives to wrap the opening and
+closing pieces of code:
+
+    <% for my $item ( @shopping_list ) { %>
+        <p>I need a <%= $item %>.</p>
+    <% } %>
+
+=head3 <%= %>
+
+Evaluates the enclosed code and prints its result. 
+
+    Author: <%= 'Hi ' + $name %>
+
+=head3 <%# %>
+
+Comments out the enclosed text, which will neither be executed or
+show in the rendered document.
+
+=head3 <%~ $xpath %>
+
+Takes the XPath expression, applies it on the current
+node and renders the resulting nodes. Equivalent of doing
+
+    <%= $style->render( $node->findnodes( $xpath ), $args ) %>
+
+Example:
+
+    $xss->set( chapter => { content => <<'END_CONTENT' } );
+        <%~ title %>   <%# process the title node %>
+        <%~ para %>    <%# ... and then the paragraphs %>
+        <%~ note %>    <%# ... and the notes %>
+    END_CONTENT
+
+=head3 <%@ $xpath %>
+
+Takes the XPath expression and prints its value.  Equivalent of doing
+
+    <%= $node->findvalue( $xpath ) %>
+
+=head1 EXPORTED FUNCTIONS
+
+=head2 xsst( $template )
+
+Takes the template given as a string and convert it as a 
+C<XML::XSS::Template> object ready to be used by a style attribute 
+of the stylesheet.
+
+    my $template = xsst q{
+        <div>
+            <h2>List of stuff</h2>
+            <%~ item %>
+        </div>
+    };
+
+    $xss->set( list => { content => $template } );
+
+From the point of view of the stylesheet, the template object created by
+C<xsst> is just another coderef, and will be passed the usual rendering node,
+xml node and option hashref arguments. For convenience, those are already
+made available as C<$style>, C<$node> and C<$args>.
+
+    my $template = xstt q{
+        <h2><%= $style->stylesheet->stash->{section_nbr}++ %>. <%~ title %></h2>
+        <% for my $child ( $node->childNodes ) { %>
+            do something...
+        <% } %>
+    };
+
+=head1 ATTRIBUTES
+
+=head2 template
+
+The original template string.
+
+=head2 code
+
+The code generated out of the original template, as a string.
+
+    my $template = xsst q{ Hello <%= $style->stylesheet->stash->{name} %> };
+    print $template->code;
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

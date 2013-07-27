@@ -1,4 +1,10 @@
 package XML::XSS::Role::Renderer;
+BEGIN {
+  $XML::XSS::Role::Renderer::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $XML::XSS::Role::Renderer::VERSION = '0.3.2';
+}
 # ABSTRACT: XML::XSS role for rendering rule
 
 use Moose::Role;
@@ -52,58 +58,6 @@ sub _render {
     return $self->$attr->render( $self, $node, $args );
 }
 
-=head1 OVERLOADING
-
-=head2 Concatenation (.)
-
-Shortcut to get the style attributes.
-
-    my $pre = $xss.'chapter'.'pre';
-
-is equivalent to 
-
-    my $pre = $xss->get('chapter')->pre;
-
-In addition of the usual style attributes, the special keyword 'style' can
-also be used, which returns the object itself. Which is useful to use the 
-other overloaded operators, which don't work without it. :-(
-
-    # will work
-    $xss.'chapter'.'style' %= {
-        pre  => '<div class="chapter">',
-        post => '</div>',
-    };
-
-    # will work too
-    my $chapter = $xss.'chapter';
-    $chapter %= {
-        pre  => '<div class="chapter">',
-        post => '</div>',
-    };
-
-    # won't work!
-    $xss.'chapter' %= {
-        pre  => '<div class="chapter">',
-        post => '</div>',
-    };
-
-=head2 %=
-
-Assigns a set of style attributes.
-
-    $xss.'chapter'.'style' %= {
-        pre  => '<div class="chapter">',
-        post => '</div>',
-    };
-
-is equivalent to
-
-    $xss->set( chapter => {
-        pre  => '<div class="chapter">',
-        post => '</div>',
-    } );
-
-=cut
 
 # http://use.perl.org/~tokuhirom/journal/36582
 __PACKAGE__->meta->add_package_symbol( '&()' => sub { } );    # dummy
@@ -186,3 +140,78 @@ sub style_attribute_hash {
 
 1;
 
+__END__
+
+=pod
+
+=head1 NAME
+
+XML::XSS::Role::Renderer - XML::XSS role for rendering rule
+
+=head1 VERSION
+
+version 0.3.2
+
+=head1 OVERLOADING
+
+=head2 Concatenation (.)
+
+Shortcut to get the style attributes.
+
+    my $pre = $xss.'chapter'.'pre';
+
+is equivalent to 
+
+    my $pre = $xss->get('chapter')->pre;
+
+In addition of the usual style attributes, the special keyword 'style' can
+also be used, which returns the object itself. Which is useful to use the 
+other overloaded operators, which don't work without it. :-(
+
+    # will work
+    $xss.'chapter'.'style' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+    # will work too
+    my $chapter = $xss.'chapter';
+    $chapter %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+    # won't work!
+    $xss.'chapter' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+=head2 %=
+
+Assigns a set of style attributes.
+
+    $xss.'chapter'.'style' %= {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    };
+
+is equivalent to
+
+    $xss->set( chapter => {
+        pre  => '<div class="chapter">',
+        post => '</div>',
+    } );
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

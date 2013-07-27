@@ -1,4 +1,10 @@
 package XML::XSS::Stylesheet::HTML2TD;
+BEGIN {
+  $XML::XSS::Stylesheet::HTML2TD::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $XML::XSS::Stylesheet::HTML2TD::VERSION = '0.3.2';
+}
 
 use Moose;
 use XML::XSS;
@@ -65,3 +71,28 @@ sub pre_attrs {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+XML::XSS::Stylesheet::HTML2TD
+
+=head1 VERSION
+
+version 0.3.2
+
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
+=cut

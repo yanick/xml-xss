@@ -1,6 +1,12 @@
 #!/usr/bin/env perl
 
 package XML::XSS::xss;
+BEGIN {
+  $XML::XSS::xss::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $XML::XSS::xss::VERSION = '0.3.2';
+}
 #ABSTRACT: command-line XML::XSS processor
 
 use Getopt::Long;
@@ -36,9 +42,27 @@ __END__
 
 =pod
 
+=head1 NAME
+
+XML::XSS::xss - command-line XML::XSS processor
+
+=head1 VERSION
+
+version 0.3.2
+
 =head1 SYNOPSIS
 
     xss --stylesheet <stylesheet> document.xml
 
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

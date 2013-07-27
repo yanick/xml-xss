@@ -1,5 +1,104 @@
 package XML::XSS::Element;
+BEGIN {
+  $XML::XSS::Element::AUTHORITY = 'cpan:YANICK';
+}
+{
+  $XML::XSS::Element::VERSION = '0.3.2';
+}
 # ABSTRACT: XML::XSS element stylesheet rule
+
+
+use Moose;
+use MooseX::SemiAffordanceAccessor;
+use MooseX::Clone;
+
+use Scalar::Util qw/ refaddr /;
+
+with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
+
+no warnings qw/ uninitialized /;
+
+
+sub render_attributes {
+    return qw/ process content showtag rename pre intro 
+    prechildren prechild postchild postchildren extro post /;
+}
+
+has [ render_attributes() ] => ( traits => [qw/ XML::XSS::Role::StyleAttribute Clone /] );
+
+before "set_$_" => sub {
+    my $self = shift;
+    $self->detach_from_stylesheet if $self->_within_apply;
+  }
+  for render_attributes();
+
+
+sub apply {
+    my ( $self, $node, $args ) = @_;
+    $args ||= {};
+
+    return
+      if $self->has_process and !$self->_render( 'process', $node, $args );
+
+    my $output = $self->_render( 'pre', $node, $args );
+
+    my $showtag =
+      $self->has_showtag ? $self->showtag 
+        : $self->has_pre || $self->has_content ? 0 : 1;
+
+    my $name;
+    if ($showtag) {
+        $name =
+            $self->has_rename
+          ? $self->_render( 'rename', $node, $args )
+          : $node->nodeName;
+
+        $output .= join ' ', 
+            "<$name",
+            map { join '=', $_->nodeName, "'@{[$_->serializeContent]}'" }
+                $node->attributes;
+        $output .= '>';
+    }
+
+    $output .= $self->_render( 'intro', $node, $args );
+
+    if ( $self->has_content ) {
+        $output .= $self->_render( 'content', $node, $args );
+    }
+    else {
+        if ( my @children = $node->childNodes ) {
+            $output .= $self->_render( 'prechildren', $node, $args );
+            for ( $node->childNodes ) {
+                $output .= $self->_render( 'prechild', $node, $args );
+                $output .= $self->render( $_, $args );
+                $output .= $self->_render( 'postchild', $node, $args );
+            }
+            $output .= $self->_render( 'postchildren', $node, $args );
+        }
+    }
+
+    $output .= $self->_render( 'extro', $node, $args );
+
+    $output .= "</$name>" if $showtag;
+
+    $output .= $self->_render( 'post', $node, $args );
+
+    return $output;
+}
+
+1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+XML::XSS::Element - XML::XSS element stylesheet rule
+
+=head1 VERSION
+
+version 0.3.2
 
 =head1 SYNOPSIS
 
@@ -18,18 +117,6 @@ package XML::XSS::Element;
 
 A C<XML::XSS> rule that matches against the element nodes
 of the xml document to be rendered.
-
-=cut
-
-use Moose;
-use MooseX::SemiAffordanceAccessor;
-use MooseX::Clone;
-
-use Scalar::Util qw/ refaddr /;
-
-with 'XML::XSS::Role::Renderer', 'MooseX::Clone';
-
-no warnings qw/ uninitialized /;
 
 =head1 RENDERING ATTRIBUTES
 
@@ -151,21 +238,6 @@ Printed before the element closing tag position.
 
 Printed after the element closing tag position.
 
-=cut
-
-sub render_attributes {
-    return qw/ process content showtag rename pre intro 
-    prechildren prechild postchild postchildren extro post /;
-}
-
-has [ render_attributes() ] => ( traits => [qw/ XML::XSS::Role::StyleAttribute Clone /] );
-
-before "set_$_" => sub {
-    my $self = shift;
-    $self->detach_from_stylesheet if $self->_within_apply;
-  }
-  for render_attributes();
-
 =head1 METHODS
 
 =head2 stylesheet()
@@ -178,60 +250,15 @@ Shortcut for
 
     $self->stylesheet->render( ... );
 
+=head1 AUTHOR
+
+Yanick Champoux <yanick@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2013 by Yanick Champoux.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
+
 =cut
-
-sub apply {
-    my ( $self, $node, $args ) = @_;
-    $args ||= {};
-
-    return
-      if $self->has_process and !$self->_render( 'process', $node, $args );
-
-    my $output = $self->_render( 'pre', $node, $args );
-
-    my $showtag =
-      $self->has_showtag ? $self->showtag 
-        : $self->has_pre || $self->has_content ? 0 : 1;
-
-    my $name;
-    if ($showtag) {
-        $name =
-            $self->has_rename
-          ? $self->_render( 'rename', $node, $args )
-          : $node->nodeName;
-
-        $output .= join ' ', 
-            "<$name",
-            map { join '=', $_->nodeName, "'@{[$_->serializeContent]}'" }
-                $node->attributes;
-        $output .= '>';
-    }
-
-    $output .= $self->_render( 'intro', $node, $args );
-
-    if ( $self->has_content ) {
-        $output .= $self->_render( 'content', $node, $args );
-    }
-    else {
-        if ( my @children = $node->childNodes ) {
-            $output .= $self->_render( 'prechildren', $node, $args );
-            for ( $node->childNodes ) {
-                $output .= $self->_render( 'prechild', $node, $args );
-                $output .= $self->render( $_, $args );
-                $output .= $self->_render( 'postchild', $node, $args );
-            }
-            $output .= $self->_render( 'postchildren', $node, $args );
-        }
-    }
-
-    $output .= $self->_render( 'extro', $node, $args );
-
-    $output .= "</$name>" if $showtag;
-
-    $output .= $self->_render( 'post', $node, $args );
-
-    return $output;
-}
-
-1;
-
