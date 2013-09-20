@@ -11,6 +11,10 @@ Revision history for XML::XSS
 
  [NEW FEATURES]
 
+ [MISC]
+ * Use the native traits instead of Moose::AttributeHelpers.
+    (RT#88824, raised by Karen Etheridge)
+
  [STATISTICS]
 
 0.3.2 2013-07-27

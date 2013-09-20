@@ -4,4 +4,4 @@ lib/XML/XPathScript2/Stylesheet
 XML-XSS*
 blog2
 .build
-lib/XML/.XSS.pm.un~
+*.un~
