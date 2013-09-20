@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Stylesheet::HTML2TD::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Stylesheet::HTML2TD::VERSION = '0.3.2';
+  $XML::XSS::Stylesheet::HTML2TD::VERSION = '0.3.3';
 }
 
 use Moose;
@@ -82,7 +82,7 @@ XML::XSS::Stylesheet::HTML2TD
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 AUTHOR
 

@@ -4,7 +4,7 @@
       "Yanick Champoux <yanick@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Dist::Zilla version 4.300030, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "Dist::Zilla version 4.300037, CPAN::Meta::Converter version 2.120921",
    "license" : [
       "perl_5"
    ],
@@ -35,7 +35,6 @@
             "Moose" : "0",
             "Moose::Exporter" : "0",
             "Moose::Role" : "0",
-            "MooseX::AttributeHelpers" : "0",
             "MooseX::ClassAttribute" : "0",
             "MooseX::Clone" : "0",
             "MooseX::SemiAffordanceAccessor" : "0",
@@ -49,12 +48,15 @@
       },
       "test" : {
          "requires" : {
-            "File::Find" : "0",
-            "File::Temp" : "0",
+            "File::Spec" : "0",
+            "IO::Handle" : "0",
+            "IPC::Open3" : "0",
             "Test::Class" : "0",
             "Test::Class::Load" : "0",
             "Test::More" : "0.94",
+            "Test::Script" : "1.05",
             "base" : "0",
+            "lib" : "0",
             "strict" : "0"
          }
       }
@@ -62,47 +64,47 @@
    "provides" : {
       "XML::XSS" : {
          "file" : "lib/XML/XSS.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Comment" : {
          "file" : "lib/XML/XSS/Comment.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Document" : {
          "file" : "lib/XML/XSS/Document.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Element" : {
          "file" : "lib/XML/XSS/Element.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::ProcessingInstruction" : {
          "file" : "lib/XML/XSS/ProcessingInstruction.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Role::Renderer" : {
          "file" : "lib/XML/XSS/Role/Renderer.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Role::StyleAttribute" : {
          "file" : "lib/XML/XSS/Role/StyleAttribute.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::StyleAttribute" : {
          "file" : "lib/XML/XSS/StyleAttribute.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Stylesheet::HTML2TD" : {
          "file" : "lib/XML/XSS/Stylesheet/HTML2TD.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Template" : {
          "file" : "lib/XML/XSS/Template.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       },
       "XML::XSS::Text" : {
          "file" : "lib/XML/XSS/Text.pm",
-         "version" : "v0.3.2"
+         "version" : "v0.3.3"
       }
    },
    "release_status" : "stable",
@@ -118,13 +120,14 @@
          "web" : "https://github.com/yanick/xml-xss"
       }
    },
-   "version" : "0.3.2",
+   "version" : "0.3.3",
    "x_author_pledge" : {
       "version" : 1
    },
    "x_authority" : "cpan:YANICK",
    "x_contributors" : [
       "Dave Rolsky <autarch@urth.org>",
+      "Karen Etheridge <ether@cpan.org>",
       "Reini Urban <rurban@cpan.org>"
    ]
 }

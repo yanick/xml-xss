@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::StyleAttribute::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::StyleAttribute::VERSION = '0.3.2';
+  $XML::XSS::StyleAttribute::VERSION = '0.3.3';
 }
 
 # ABSTRACT: Style attribute for XML::XSS stylesheet rule
@@ -75,7 +75,7 @@ XML::XSS::StyleAttribute - Style attribute for XML::XSS stylesheet rule
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 SYNOPSIS
 

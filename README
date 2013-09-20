@@ -2,7 +2,7 @@ NAME
     XML::XSS - XML stylesheet system
 
 VERSION
-    version 0.3.2
+    version 0.3.3
 
 SYNOPSIS
         use XML::XSS;

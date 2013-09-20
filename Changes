@@ -1,5 +1,13 @@
 Revision history for XML::XSS
 
+0.3.3 2013-09-19
+ [MISC]
+ - Use the native traits instead of Moose::AttributeHelpers. (RT#88824,
+   raised by Karen Etheridge)
+
+ [STATISTICS]
+ - code churn: 3 files changed, 51 insertions(+), 32 deletions(-)
+
 0.3.2 2013-07-27
  [BUG FIXES]
  - Fix precedence bug with return statement. (RT#87196, Reini Urban)

@@ -1,73 +1,62 @@
-#!perl
-
 use strict;
 use warnings;
 
-use Test::More;
+# this test was generated with Dist::Zilla::Plugin::Test::Compile 2.020
+
+use Test::More 0.88;
 
 
 
-use File::Find;
-use File::Temp qw{ tempdir };
-
-my @modules;
-find(
-  sub {
-    return if $File::Find::name !~ /\.pm\z/;
-    my $found = $File::Find::name;
-    $found =~ s{^lib/}{};
-    $found =~ s{[/\\]}{::}g;
-    $found =~ s/\.pm$//;
-    # nothing to skip
-    push @modules, $found;
-  },
-  'lib',
+my @module_files = (
+    'XML/XSS.pm',
+    'XML/XSS/Comment.pm',
+    'XML/XSS/Document.pm',
+    'XML/XSS/Element.pm',
+    'XML/XSS/ProcessingInstruction.pm',
+    'XML/XSS/Role/Renderer.pm',
+    'XML/XSS/Role/StyleAttribute.pm',
+    'XML/XSS/StyleAttribute.pm',
+    'XML/XSS/Stylesheet/HTML2TD.pm',
+    'XML/XSS/Template.pm',
+    'XML/XSS/Text.pm'
 );
 
-sub _find_scripts {
-    my $dir = shift @_;
+my @scripts = (
+    'bin/xss'
+);
 
-    my @found_scripts = ();
-    find(
-      sub {
-        return unless -f;
-        my $found = $File::Find::name;
-        # nothing to skip
-        open my $FH, '<', $_ or do {
-          note( "Unable to open $found in ( $! ), skipping" );
-          return;
-        };
-        my $shebang = <$FH>;
-        return unless $shebang =~ /^#!.*?\bperl\b\s*$/;
-        push @found_scripts, $found;
-      },
-      $dir,
-    );
+# no fake home requested
 
-    return @found_scripts;
-}
+use IPC::Open3;
+use IO::Handle;
+use File::Spec;
 
-my @scripts;
-do { push @scripts, _find_scripts($_) if -d $_ }
-    for qw{ bin script scripts };
-
-my $plan = scalar(@modules) + scalar(@scripts);
-$plan ? (plan tests => $plan) : (plan skip_all => "no tests to run");
-
+my @warnings;
+for my $lib (@module_files)
 {
-    # fake home for cpan-testers
-    # no fake requested ## local $ENV{HOME} = tempdir( CLEANUP => 1 );
+    open my $stdout, '>', File::Spec->devnull or die $!;
+    open my $stdin, '<', File::Spec->devnull or die $!;
+    my $stderr = IO::Handle->new;
 
-    like( qx{ $^X -Ilib -e "require $_; print '$_ ok'" }, qr/^\s*$_ ok/s, "$_ loaded ok" )
-        for sort @modules;
+    my $pid = open3($stdin, $stdout, $stderr, qq{$^X -Mblib -e"require q[$lib]"});
+    waitpid($pid, 0);
+    is($? >> 8, 0, "$lib loaded ok");
 
-    SKIP: {
-        eval "use Test::Script 1.05; 1;";
-        skip "Test::Script needed to test script compilation", scalar(@scripts) if $@;
-        foreach my $file ( @scripts ) {
-            my $script = $file;
-            $script =~ s!.*/!!;
-            script_compiles( $file, "$script script compiles" );
-        }
+    if (my @_warnings = <$stderr>)
+    {
+        warn @_warnings;
+        push @warnings, @_warnings;
     }
 }
+
+use Test::Script 1.05;
+foreach my $file ( @scripts ) {
+    script_compiles( $file, "$file compiles" );
+}
+
+
+is(scalar(@warnings), 0, 'no warnings found') if $ENV{AUTHOR_TESTING};
+
+
+
+done_testing;

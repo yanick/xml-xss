@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::VERSION = '0.3.2';
+  $XML::XSS::VERSION = '0.3.3';
 }
 # ABSTRACT: XML stylesheet system
 
@@ -12,7 +12,6 @@ use 5.10.0;
 
 use MooseX::SemiAffordanceAccessor;
 use Moose;
-use MooseX::AttributeHelpers;
 use MooseX::ClassAttribute;
 use Moose::Exporter;
 
@@ -39,7 +38,6 @@ Moose::Exporter->setup_import_methods(
 
 sub style { 
     my $metaclass = shift;
-    $DB::single = 1;
     my $master = ($metaclass->linearized_isa)[0]->master;
 
     my $element = shift;
@@ -155,14 +153,13 @@ has comment => (
 
 has '_elements' => (
     isa       => 'HashRef[XML::XSS::Element]',
-    metaclass => 'Collection::Hash',
     default   => sub { {} },
-    provides  => {
-        set    => '_set_element',
-        get    => '_element',
-        'keys' => 'element_keys',
+    handles  => {
+        '_set_element' => 'set',
+        '_element' => 'get',
+        'element_keys' => 'keys',
     },
-    traits => [ 'Clone' ],
+    traits => [ 'Clone', 'Hash' ],
 );
 
 
@@ -361,7 +358,7 @@ XML::XSS - XML stylesheet system
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 SYNOPSIS
 

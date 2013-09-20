@@ -48,14 +48,14 @@ sub pmver {
     return sprintf('%-45s => %-10s%-15s%s', $module, $pmver, $wanted, "\n");
 }
 
-eval { $v .= pmver('File::Find','any version') };
-eval { $v .= pmver('File::Temp','any version') };
+eval { $v .= pmver('File::Spec','any version') };
 eval { $v .= pmver('Getopt::Long','any version') };
+eval { $v .= pmver('IO::Handle','any version') };
+eval { $v .= pmver('IPC::Open3','any version') };
 eval { $v .= pmver('Module::Build','0.3601') };
 eval { $v .= pmver('Moose','any version') };
 eval { $v .= pmver('Moose::Exporter','any version') };
 eval { $v .= pmver('Moose::Role','any version') };
-eval { $v .= pmver('MooseX::AttributeHelpers','any version') };
 eval { $v .= pmver('MooseX::ClassAttribute','any version') };
 eval { $v .= pmver('MooseX::Clone','any version') };
 eval { $v .= pmver('MooseX::SemiAffordanceAccessor','any version') };
@@ -64,8 +64,10 @@ eval { $v .= pmver('Scalar::Util','any version') };
 eval { $v .= pmver('Test::Class','any version') };
 eval { $v .= pmver('Test::Class::Load','any version') };
 eval { $v .= pmver('Test::More','0.94') };
+eval { $v .= pmver('Test::Script','1.05') };
 eval { $v .= pmver('XML::LibXML','any version') };
 eval { $v .= pmver('base','any version') };
+eval { $v .= pmver('lib','any version') };
 eval { $v .= pmver('overload','any version') };
 eval { $v .= pmver('strict','any version') };
 eval { $v .= pmver('version','0.9901') };

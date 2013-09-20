@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Document::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Document::VERSION = '0.3.2';
+  $XML::XSS::Document::VERSION = '0.3.3';
 }
 # ABSTRACT: XML::XSS document stylesheet rule
 
@@ -57,7 +57,7 @@ XML::XSS::Document - XML::XSS document stylesheet rule
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 SYNOPSIS
 

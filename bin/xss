@@ -5,7 +5,7 @@ BEGIN {
   $XML::XSS::xss::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::xss::VERSION = '0.3.2';
+  $XML::XSS::xss::VERSION = '0.3.3';
 }
 #ABSTRACT: command-line XML::XSS processor
 
@@ -48,7 +48,7 @@ XML::XSS::xss - command-line XML::XSS processor
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 SYNOPSIS
 

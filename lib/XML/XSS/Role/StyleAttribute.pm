@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Role::StyleAttribute::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Role::StyleAttribute::VERSION = '0.3.2';
+  $XML::XSS::Role::StyleAttribute::VERSION = '0.3.3';
 }
 # ABSTRACT: Trait of style attributes
 
@@ -38,7 +38,7 @@ XML::XSS::Role::StyleAttribute - Trait of style attributes
 
 =head1 VERSION
 
-version 0.3.2
+version 0.3.3
 
 =head1 AUTHOR
 
