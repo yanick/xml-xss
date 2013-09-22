@@ -11,6 +11,10 @@ Revision history for XML::XSS
 
  [NEW FEATURES]
 
+ [MISC]
+ - Update test-compile tests (was hanging on Windows if depedencies
+    were not met). (RT#88891, Alexandr Ciornii)
+
  [STATISTICS]
 
 0.3.3 2013-09-19
