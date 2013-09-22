@@ -1,5 +1,13 @@
 Revision history for XML::XSS
 
+0.3.4 2013-09-22
+ [MISC]
+ - Update test-compile tests (was hanging on Windows if depedencies were
+   not met). (RT#88891, Alexandr Ciornii)
+
+ [STATISTICS]
+ - code churn: 3 files changed, 59 insertions(+), 32 deletions(-)
+
 0.3.3 2013-09-19
  [MISC]
  - Use the native traits instead of Moose::AttributeHelpers. (RT#88824,

@@ -64,7 +64,6 @@ eval { $v .= pmver('Scalar::Util','any version') };
 eval { $v .= pmver('Test::Class','any version') };
 eval { $v .= pmver('Test::Class::Load','any version') };
 eval { $v .= pmver('Test::More','0.94') };
-eval { $v .= pmver('Test::Script','1.05') };
 eval { $v .= pmver('XML::LibXML','any version') };
 eval { $v .= pmver('base','any version') };
 eval { $v .= pmver('lib','any version') };

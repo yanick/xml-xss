@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Role::Renderer::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Role::Renderer::VERSION = '0.3.3';
+  $XML::XSS::Role::Renderer::VERSION = '0.3.4';
 }
 # ABSTRACT: XML::XSS role for rendering rule
 
@@ -150,7 +150,7 @@ XML::XSS::Role::Renderer - XML::XSS role for rendering rule
 
 =head1 VERSION
 
-version 0.3.3
+version 0.3.4
 
 =head1 OVERLOADING
 

@@ -17,7 +17,7 @@ my %module_build_args = (
     "Yanick Champoux <yanick\@cpan.org>"
   ],
   "dist_name" => "XML-XSS",
-  "dist_version" => "0.3.3",
+  "dist_version" => "0.3.4",
   "license" => "perl",
   "module_name" => "XML::XSS",
   "recommends" => {},
@@ -47,7 +47,6 @@ my %module_build_args = (
     "Test::Class" => 0,
     "Test::Class::Load" => 0,
     "Test::More" => "0.94",
-    "Test::Script" => "1.05",
     "base" => 0,
     "lib" => 0,
     "strict" => 0

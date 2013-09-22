@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Comment::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Comment::VERSION = '0.3.3';
+  $XML::XSS::Comment::VERSION = '0.3.4';
 }
 # ABSTRACT: XML::XSS comment stylesheet rule
 
@@ -75,7 +75,7 @@ XML::XSS::Comment - XML::XSS comment stylesheet rule
 
 =head1 VERSION
 
-version 0.3.3
+version 0.3.4
 
 =head1 SYNOPSIS
 

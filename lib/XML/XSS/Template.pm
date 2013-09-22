@@ -3,7 +3,7 @@ BEGIN {
   $XML::XSS::Template::AUTHORITY = 'cpan:YANICK';
 }
 {
-  $XML::XSS::Template::VERSION = '0.3.3';
+  $XML::XSS::Template::VERSION = '0.3.4';
 }
 
 # ABSTRACT: XML::XSS templates
@@ -199,7 +199,7 @@ XML::XSS::Template - XML::XSS templates
 
 =head1 VERSION
 
-version 0.3.3
+version 0.3.4
 
 =head1 SYNOPSIS
 
