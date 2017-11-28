@@ -4,6 +4,7 @@ Revision history for XML::XSS
  [API CHANGES]
 
  [BUG FIXES]
+ - quiet warnings about smartmatching
 
  [DOCUMENTATION]
 

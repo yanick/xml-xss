@@ -134,6 +134,8 @@ use 5.10.0;
 use Moose;
 use MooseX::SemiAffordanceAccessor;
 
+use experimental 'smartmatch';
+
 with qw(MooseX::Clone);
 
 use overload

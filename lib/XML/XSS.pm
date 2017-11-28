@@ -135,6 +135,7 @@ from the stylesheet, like so
 
 use 5.10.0;
 
+
 use MooseX::SemiAffordanceAccessor;
 use Moose;
 use MooseX::ClassAttribute;
@@ -151,6 +152,8 @@ use XML::XSS::ProcessingInstruction;
 use XML::XSS::Template;
 
 use MooseX::Clone;
+
+use experimental 'smartmatch';
 
 with 'MooseX::Clone';
 

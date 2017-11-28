@@ -4,6 +4,8 @@ package XML::XSS::Role::Renderer;
 use Moose::Role;
 use MooseX::SemiAffordanceAccessor;
 
+use experimental 'smartmatch';
+
 use Scalar::Util qw/ refaddr /;
 
 has stylesheet => (
